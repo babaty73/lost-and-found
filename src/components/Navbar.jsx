@@ -1,9 +1,13 @@
-import React from "react";
+import { Link } from "react-router-dom";
 
 function Navbar() {
   return (
-    <nav style={{ margin: "20px" }}>
-      <h2>Navbar</h2>
+    <nav style={{ padding: "10px", background: "#eee" }}>
+      <Link to="/">Home</Link> |{" "}
+      <Link to="/report-lost">Report Lost</Link> |{" "}
+      <Link to="/report-found">Report Found</Link> |{" "}
+      <Link to="/search">Search</Link> |{" "}
+      <Link to="/dashboard">Dashboard</Link>
     </nav>
   );
 }

@@ -1,10 +1,5 @@
 function Home() {
-  return (
-    <div>
-      <h1>ASTU Lost & Found System</h1>
-      <p>Welcome! This is the Home page.</p>
-    </div>
-  );
+  return <h1>Home Page</h1>;
 }
 
 export default Home;
