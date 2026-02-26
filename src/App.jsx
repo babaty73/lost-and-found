@@ -8,10 +8,7 @@ import ReportFound from "./pages/FoundedItems";
 import Search from "./pages/Search";
 import Dashboard from "./pages/Dashboard";
 
-import { items as initialItems } from "./data/data";
-
 function App() {
-  const [lostItems, setLostItems] = useState(initialItems);
   const [foundItems, setFoundItems] = useState([]);
 
   return (
@@ -42,14 +39,14 @@ function App() {
 
         <Route
     path="/search"
-    element={<Search lostItems={lostItems} foundItems={foundItems} />}
+    element={<Search  foundItems={foundItems} />}
   />
           
         
 
       <Route
     path="/dashboard"
-    element={<Dashboard lostItems={lostItems} foundItems={foundItems} />}
+    element={<Dashboard foundItems={foundItems} />}
   />
          
       </Routes>
