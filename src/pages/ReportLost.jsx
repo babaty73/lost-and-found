@@ -1,34 +1,92 @@
 import { useState } from "react";
-import { items } from "../data/data";
-import ItemCard from "../components/ItemCard";
+import { useNavigate } from "react-router-dom";
 
-function ReportLost() {
-  const [lostItems, setLostItems] = useState(items);
-  const [form, setForm] = useState({ name: "", category: "", location: "", date: "" });
+function ReportLost({ foundItems, setFoundItems }) {
+  const navigate = useNavigate();
+
+  const [form, setForm] = useState({
+    name: "",
+    category: "",
+    location: "",
+    date: "",
+    image: null,
+  });
 
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    if (e.target.name === "image") {
+      const file = e.target.files[0];
+      const imageURL = URL.createObjectURL(file);
+      setForm({ ...form, image: imageURL });
+    } else {
+      setForm({ ...form, [e.target.name]: e.target.value });
+    }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setLostItems([...lostItems, form]);
-    setForm({ name: "", category: "", location: "", date: "" });
+
+    setFoundItems([...foundItems, form]);
+
+    alert("Your report was successfully submitted!");
+
+    navigate("/report-found");
+
+    setForm({
+      name: "",
+      category: "",
+      location: "",
+      date: "",
+      image: null,
+    });
   };
 
   return (
     <div>
-      <h1>Report Lost Item</h1>
-      <form onSubmit={handleSubmit}>
-        <input name="name" placeholder="Item Name" value={form.name} onChange={handleChange} required />
-        <input name="category" placeholder="Category" value={form.category} onChange={handleChange} required />
-        <input name="location" placeholder="Location" value={form.location} onChange={handleChange} required />
-        <input type="date" name="date" value={form.date} onChange={handleChange} required />
-        <button type="submit">Add Lost Item</button>
-      </form>
+      <h1>Report Found Item</h1>
 
-      <h2>Lost Items</h2>
-      {lostItems.map((item, index) => <ItemCard key={index} item={item} />)}
+      <form onSubmit={handleSubmit}>
+        <input
+          name="name"
+          placeholder="Item Name"
+          value={form.name}
+          onChange={handleChange}
+          required
+        />
+
+        <input
+          name="category"
+          placeholder="Category"
+          value={form.category}
+          onChange={handleChange}
+          required
+        />
+
+        <input
+          name="location"
+          placeholder="Location"
+          value={form.location}
+          onChange={handleChange}
+          required
+        />
+
+        <input
+          type="date"
+          name="date"
+          value={form.date}
+          onChange={handleChange}
+          required
+        />
+
+        {/* Image Upload */}
+        <input
+          type="file"
+          name="image"
+          accept="image/*"
+          onChange={handleChange}
+        />
+
+        <button type="submit">Submit</button>
+      </form>
     </div>
   );
 }
