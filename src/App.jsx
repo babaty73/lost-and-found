@@ -19,61 +19,39 @@ function App() {
       <Navbar />
 
       <Routes>
-        <Route path="/" element={<Home />} />
+       <Route path="/" element={<Home />} />
 
-        <Route
-          path="/report-lost"
-          element={
-            <ReportLost
-              lostItems={lostItems}
-              setLostItems={setLostItems}
-            />
-          }
-        />
-
-        <Route
-          path="/report-found"
-          element={
-            <ReportFound
-              foundItems={foundItems}
-              setFoundItems={setFoundItems}
-            />
-          }
-        />
-
-        <Route
-          path="/search"
-          element={
-            <Search
-              lostItems={lostItems}
-              foundItems={foundItems}
-            />
-          }
-        />
-
-        <Route
-          path="/dashboard"
-          element={
-            <Dashboard
-              lostItems={lostItems}
-              foundItems={foundItems}
-            />
-          }
-        />
-          <Route
-  path="/report-lost"
-  element={
-    <ReportLost
-      foundItems={foundItems}
-      setFoundItems={setFoundItems}
-    />
-  }
-/>
-
+  <Route
+    path="/report-lost"
+    element={
+      <ReportLost
+        foundItems={foundItems}
+        setFoundItems={setFoundItems}
+      />
+    }
+  />
 <Route
-  path="/report-found"
-  element={<ReportFound foundItems={foundItems} />}
-/>
+    path="/report-found"
+    element={
+      <ReportFound
+        foundItems={foundItems}
+        setFoundItems={setFoundItems}
+      />
+    }
+  />
+
+        <Route
+    path="/search"
+    element={<Search lostItems={lostItems} foundItems={foundItems} />}
+  />
+          
+        
+
+      <Route
+    path="/dashboard"
+    element={<Dashboard lostItems={lostItems} foundItems={foundItems} />}
+  />
+         
       </Routes>
     
 
