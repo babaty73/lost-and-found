@@ -1,20 +1,24 @@
+import ItemCard from "../components/ItemCard";
 import "./Dashboard.css";
-function Dashboard() {
+
+function Dashboard({ foundItems }) {
   return (
-    <div  className="dashboard-container">
-      <div className="dashboard-section">
-        Founded Items:<br></br>
-      <div className="Numbers">
-        0
-      </div>
-      </div>
-       <div className="dashboard-section">
-        Lost Items:<br></br>
-      <div className="Numbers">
-        0
-      </div>
-      </div>
-      </div>
+    <div className="dashboard-container">
+      <h1>Dashboard</h1>
+      <p className="dashboard-subtitle">
+        All items reported as found are displayed below:
+      </p>
+
+      {foundItems.length === 0 ? (
+        <p className="no-items">No found items reported yet.</p>
+      ) : (
+        <div className="cards-container">
+          {foundItems.map((item, index) => (
+            <ItemCard key={index} item={item} />
+          ))}
+        </div>
+      )}
+    </div>
   );
 }
 

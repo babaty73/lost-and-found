@@ -9,8 +9,7 @@ function ItemCard({ item }) {
       }}
     >
       <h3>{item.name}</h3>
-      <p><strong>Category:</strong> {item.category}</p>
-      <p><strong>Location:</strong> {item.location}</p>
+      <p><strong>Founded:</strong> {item.location}</p>
       <p><strong>Date:</strong> {item.date}</p>
 
       {item.image && (
