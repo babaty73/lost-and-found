@@ -1,9 +1,9 @@
 import ItemCard from "../components/ItemCard";
 
-function ReportFound({ foundItems }) {
+function FoundedItems({ foundItems }) {
   return (
     <div>
-      <h1>Found Items</h1>
+      <h1>Founded Items</h1>
 
       {foundItems.length === 0 ? (
         <p>No items submitted yet.</p>
@@ -16,4 +16,4 @@ function ReportFound({ foundItems }) {
   );
 }
 
-export default ReportFound;
+export default FoundedItems;

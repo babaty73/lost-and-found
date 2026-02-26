@@ -4,7 +4,7 @@ import { Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import ReportLost from "./pages/ReportLost";
-import ReportFound from "./pages/ReportFound";
+import ReportFound from "./pages/FoundedItems";
 import Search from "./pages/Search";
 import Dashboard from "./pages/Dashboard";
 

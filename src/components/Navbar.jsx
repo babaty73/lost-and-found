@@ -20,7 +20,7 @@ function Navbar() {
       <div className={`nav-links ${open ? "open" : ""}`}>
         <Link to="/" onClick={() => setOpen(false)}>Home</Link>
         <Link to="/report-lost" onClick={() => setOpen(false)}>Report Lost</Link>
-        <Link to="/report-found" onClick={() => setOpen(false)}>Report Found</Link>
+        <Link to="/report-found" onClick={() => setOpen(false)}>Founded Items</Link>
         <Link to="/search" onClick={() => setOpen(false)}>Search</Link>
         <Link to="/dashboard" onClick={() => setOpen(false)}>Dashboard</Link>
       </div>

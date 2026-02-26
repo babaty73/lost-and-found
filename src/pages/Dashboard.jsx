@@ -1,9 +1,20 @@
+import "./Dashboard.css";
 function Dashboard() {
   return (
-    <div style={{ padding: "20px" }}>
-      <h1>Dashboard</h1>
-      <p>Welcome to your dashboard! Here you can manage your reports and view statistics.</p>
-    </div>
+    <div  className="dashboard-container">
+      <div className="dashboard-section">
+        Founded Items:<br></br>
+      <div className="Numbers">
+        0
+      </div>
+      </div>
+       <div className="dashboard-section">
+        Lost Items:<br></br>
+      <div className="Numbers">
+        0
+      </div>
+      </div>
+      </div>
   );
 }
 

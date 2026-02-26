@@ -6,7 +6,6 @@ function ReportLost({ foundItems, setFoundItems }) {
 
   const [form, setForm] = useState({
     name: "",
-    category: "",
     location: "",
     date: "",
     image: null,
@@ -33,7 +32,6 @@ function ReportLost({ foundItems, setFoundItems }) {
 
     setForm({
       name: "",
-      category: "",
       location: "",
       date: "",
       image: null,
@@ -49,14 +47,6 @@ function ReportLost({ foundItems, setFoundItems }) {
           name="name"
           placeholder="Item Name"
           value={form.name}
-          onChange={handleChange}
-          required
-        />
-
-        <input
-          name="category"
-          placeholder="Category"
-          value={form.category}
           onChange={handleChange}
           required
         />
