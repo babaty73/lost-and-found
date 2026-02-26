@@ -1,0 +1,40 @@
+.item-card {
+  background: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 20px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  min-height: 380px;
+}
+
+.item-content img {
+  width: 150px;
+  margin-top: 10px;
+  border-radius: 8px;
+}
+
+.item-actions {
+  margin-top: auto;  /* 🔥 THIS pushes button to bottom */
+  display: flex;
+  justify-content: center;
+  padding-top: 15px;
+  border-top: 1px solid #eee;
+}
+
+.item-actions button {
+  background-color: #1e3a8a;
+  color: white;
+  padding: 10px 16px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.item-actions button:hover {
+  background-color: #142c6e;
+}
