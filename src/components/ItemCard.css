@@ -18,7 +18,7 @@
 }
 
 .item-actions {
-  margin-top: auto;  /* 🔥 THIS pushes button to bottom */
+  margin-top: auto; 
   display: flex;
   justify-content: center;
   padding-top: 15px;
