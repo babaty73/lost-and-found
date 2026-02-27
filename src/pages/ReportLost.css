@@ -1,0 +1,82 @@
+.report-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f4f6fc;
+  padding: 20px;
+}
+
+.report-card {
+  background: white;
+  padding: 40px;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 450px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+.report-card h1 {
+  text-align: center;
+  margin-bottom: 25px;
+  color: #1e3a8a;
+}
+
+.report-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.report-form input {
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  font-size: 15px;
+}
+
+.report-form input:focus {
+  outline: none;
+  border-color: #1e3a8a;
+}
+
+.file-label {
+  background-color: #e0e7ff;
+  padding: 12px;
+  text-align: center;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  color: #1e3a8a;
+}
+
+.file-label:hover {
+  background-color: #c7d2fe;
+}
+
+.file-name {
+  font-size: 14px;
+  color: #1e3a8a;
+  text-align: center;
+}
+
+.image-preview {
+  width: 120px;
+  margin: 10px auto;
+  border-radius: 8px;
+}
+
+.submit-btn {
+  padding: 12px;
+  background-color: #1e3a8a;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 10px;
+}
+
+.submit-btn:hover {
+  background-color: #162d6b;
+}

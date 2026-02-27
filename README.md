@@ -1,18 +1,23 @@
 # ASTU Digital Lost & Found
 
-A web app to report and track lost and found items on campus.
+A campus-based lost and found web application built with React and Vite.
 
-## Features
-- Report found items with name, founded location, date, and image
-- View all reported items in a clean dashboard
-- Responsive design
+## 🚀 Features
+- Report found items
+- View submitted items
+- Dashboard overview
+- Responsive UI
 
-## Screenshots
-### Home Page
-![Home](screenshots/Home-page.jpg)
+## 📸 Screenshots
 
-### Dashboard
-![Dashboard](screenshots/Dashboard.jpg)
+### 🏠 Home Page
+![Home](screenshots/home.jpg)
+
+### 📝 Report Item
+![Report](screenshots/Reporting-Iost-Item-Page.jpg)
+
+### 📊 Dashboard
+![Dashboard](screenshots/dashboard.jpg)
 
 ## Usage
 1. Run `npm install`
