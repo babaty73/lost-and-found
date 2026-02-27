@@ -11,13 +11,13 @@ A campus-based lost and found web application built with React and Vite.
 ## 📸 Screenshots
 
 ### 🏠 Home Page
-![Home](screenshots/home.jpg)
+![Home](screenshots/Home-page.jpg)
 
 ### 📝 Report Item
 ![Report](screenshots/Reporting-Iost-Item-Page.jpg)
 
 ### 📊 Dashboard
-![Dashboard](screenshots/dashboard.jpg)
+![Dashboard](screenshots/Dashboard.jpg)
 
 ## Usage
 1. Run `npm install`
