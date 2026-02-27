@@ -21,7 +21,6 @@ function Navbar() {
         <Link to="/" onClick={() => setOpen(false)}>Home</Link>
         <Link to="/report-lost" onClick={() => setOpen(false)}>Report Lost</Link>
         <Link to="/report-found" onClick={() => setOpen(false)}>Founded Items</Link>
-        <Link to="/search" onClick={() => setOpen(false)}>Search</Link>
         <Link to="/dashboard" onClick={() => setOpen(false)}>Dashboard</Link>
       </div>
     </nav>
