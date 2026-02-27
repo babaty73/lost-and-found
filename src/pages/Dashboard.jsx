@@ -1,36 +1,47 @@
+import { useState } from "react";
 import ItemCard from "../components/ItemCard";
 import "./Dashboard.css";
 
 function Dashboard({ foundItems }) {
-  const totalFound = foundItems.length;
-  const retrievedCount = 0;
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const filteredItems = foundItems.filter((item) =>
+    item.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div className="dashboard-container">
       <h1>Dashboard</h1>
-      <p className="dashboard-subtitle">
-        Overview of all reported found items
-      </p>
 
-      {/*  NEW STATS SECTION */}
+      {/* Stats Section */}
       <div className="stats-container">
-        <div className="stat-box found-box">
-          <h2>{totalFound}</h2>
-          <p>Items Found</p>
+        <div className="stat-box">
+          <h2>{foundItems.length}</h2>
+          <p>Found Items</p>
         </div>
 
-        <div className="stat-box retrieved-box">
-          <h2>{retrievedCount}</h2>
-          <p>Items Retrieved</p>
+        <div className="stat-box">
+          <h2>0</h2>
+          <p>Retrieved Items</p>
         </div>
       </div>
 
-      {/*  EXISTING ITEMS DISPLAY */}
-      {foundItems.length === 0 ? (
-        <p className="no-items">No found items reported yet.</p>
+      {/* Search Section */}
+      <div className="search-container">
+        <input
+          type="text"
+          placeholder="Search by item name..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+      </div>
+
+      {/* Items */}
+      {filteredItems.length === 0 ? (
+        <p className="no-items">No matching items found.</p>
       ) : (
         <div className="cards-container">
-          {foundItems.map((item, index) => (
+          {filteredItems.map((item, index) => (
             <ItemCard key={index} item={item} />
           ))}
         </div>

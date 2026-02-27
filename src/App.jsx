@@ -5,7 +5,6 @@ import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import ReportLost from "./pages/ReportLost";
 import ReportFound from "./pages/FoundedItems";
-import Search from "./pages/Search";
 import Dashboard from "./pages/Dashboard";
 
 function App() {
@@ -35,14 +34,7 @@ function App() {
         setFoundItems={setFoundItems}
       />
     }
-  />
-
-        <Route
-    path="/search"
-    element={<Search  foundItems={foundItems} />}
-  />
-          
-        
+  />          
 
       <Route
     path="/dashboard"
