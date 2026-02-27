@@ -9,10 +9,10 @@ A web app to report and track lost and found items on campus.
 
 ## Screenshots
 ### Home Page
-![Home](screenshots/home.png)
+![Home](screenshots/home.jpg)
 
 ### Dashboard
-![Dashboard](screenshots/dashboard.png)
+![Dashboard](screenshots/dashboard.jpg)
 
 ## Usage
 1. Run `npm install`
