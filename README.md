@@ -22,7 +22,7 @@ A **campus-based lost and found web application** built with **React** and **Vit
 ![Home](screenshots/Home-page.jpg)
 
 ### 📝 Report Found Item Page
-![Report Found](screenshots/Reporting-lost-Item-Page.jpg)
+![Report Found](screenshots/Reporting-Iost-Item-Page.jpg)
 
 ### 📊 Dashboard
 ![Dashboard](screenshots/Dashboard.jpg)
