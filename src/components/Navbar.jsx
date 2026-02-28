@@ -1,33 +1,32 @@
-import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { Link } from "react-router-dom";
 import "./Navbar.css";
 
-function Navbar({ isLoggedIn, setIsLoggedIn }) {
-  const navigate = useNavigate();
+function Navbar({ setIsLoggedIn }) {
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const handleLogout = () => {
     setIsLoggedIn(false);
-    navigate("/");
+    setMenuOpen(false);
   };
 
   return (
     <nav className="navbar">
-      <h2 className="logo">ASTU Lost & Found</h2>
+      <div className="logo">ASTU Lost & Found</div>
 
-      <div className="nav-links">
-        <Link to="/">Home</Link>
+      <button className="menu-btn" onClick={() => setMenuOpen(!menuOpen)}>
+        ☰
+      </button>
 
-        {isLoggedIn && <Link to="/dashboard">Dashboard</Link>}
+      <div className={`nav-links ${menuOpen ? "open" : ""}`}>
+        <Link to="/home" onClick={() => setMenuOpen(false)}>Home</Link>
+        <Link to="/report-lost" onClick={() => setMenuOpen(false)}>Report Lost Item</Link>
+        <Link to="/report-found" onClick={() => setMenuOpen(false)}>Founded Items</Link>
+        <Link to="/dashboard" onClick={() => setMenuOpen(false)}>Dashboard</Link>
 
-        {!isLoggedIn ? (
-          <>
-            <Link to="/login">Login</Link>
-            <Link to="/register">Register</Link>
-          </>
-        ) : (
-          <button className="logout-btn" onClick={handleLogout}>
-            Logout
-          </button>
-        )}
+        <button className="logout-btn" onClick={handleLogout}>
+          Logout
+        </button>
       </div>
     </nav>
   );
