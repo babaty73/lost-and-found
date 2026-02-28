@@ -6,6 +6,8 @@ import Home from "./pages/Home";
 import ReportLost from "./pages/ReportLost";
 import ReportFound from "./pages/FoundedItems";
 import Dashboard from "./pages/Dashboard";
+import Register from "./pages/Register";
+import Login from "./pages/Login";
 
 function App() {
   const [foundItems, setFoundItems] = useState([]);
@@ -16,6 +18,8 @@ function App() {
 
       <Routes>
        <Route path="/" element={<Home />} />
+  <Route path="/register" element={<Register />} />
+<Route path="/login" element={<Login />} />
 
   <Route
     path="/report-lost"
