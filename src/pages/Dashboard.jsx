@@ -2,33 +2,31 @@ import { useState, useEffect } from "react";
 import ItemCard from "../components/ItemCard";
 import "./Dashboard.css";
 
-function Dashboard({ foundItems }) {
+function Dashboard() {
+  // Load items from localStorage
+  const [foundItems, setFoundItems] = useState(() => {
+    return JSON.parse(localStorage.getItem("foundItems")) || [];
+  });
+
   const [animate, setAnimate] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [filteredItems, setFilteredItems] = useState(foundItems);
 
   useEffect(() => {
     setAnimate(true);
   }, []);
 
+  // Keep localStorage updated
   useEffect(() => {
-    const query = searchQuery.toLowerCase();
-    const filtered = foundItems.filter(
-      (item) =>
-        item.name.toLowerCase().includes(query) ||
-        item.location.toLowerCase().includes(query) ||
-        item.category?.toLowerCase().includes(query)
-    );
-    setFilteredItems(filtered)
-  }, [searchQuery, foundItems]);
+    localStorage.setItem("foundItems", JSON.stringify(foundItems));
+  }, [foundItems]);
 
-  const retrievedCount = 0;
+  // Count retrieved items
+  const retrievedCount = foundItems.filter(
+    (item) => item.retrieved === true
+  ).length;
 
   return (
     <div className="dashboard-container">
       <h1 className="fade-in">Dashboard</h1>
-     
-
 
       {/* Stats Section */}
       <div className={`stats-container ${animate ? "show" : ""}`}>
@@ -42,7 +40,6 @@ function Dashboard({ foundItems }) {
           <p>Retrieved Items</p>
         </div>
       </div>
-
     </div>
   );
 }
