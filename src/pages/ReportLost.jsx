@@ -9,6 +9,7 @@ function ReportLost({ foundItems, setFoundItems }) {
     name: "",
     location: "",
     date: "",
+    category: "",
     image: null,
   });
 
@@ -30,16 +31,22 @@ function ReportLost({ foundItems, setFoundItems }) {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    setFoundItems([...foundItems, form]);
+    setFoundItems([
+  ...foundItems,
+  { ...form, status: "available" }
+]);
+
 
     alert("Your report was successfully submitted!");
 
     navigate("/report-found");
 
+    // reset form properly
     setForm({
       name: "",
       location: "",
       date: "",
+      category: "",
       image: null,
     });
 
@@ -77,6 +84,20 @@ function ReportLost({ foundItems, setFoundItems }) {
             onChange={handleChange}
             required
           />
+
+          {/* Category Dropdown */}
+          <select
+            name="category"
+            value={form.category}
+            onChange={handleChange}
+            required
+          >
+            <option value="">Select Category</option>
+            <option value="ID">ID Card</option>
+            <option value="Electronics">Electronics</option>
+            <option value="Book">Book</option>
+            <option value="Clothing">Clothing</option>
+          </select>
 
           {/* Custom File Upload */}
           <label className="file-label">

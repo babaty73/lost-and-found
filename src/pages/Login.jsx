@@ -17,7 +17,6 @@ function Login({ setIsLoggedIn }) {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Fake login (UI only)
     setIsLoggedIn(true);
     navigate("/home");
   };

@@ -1,85 +1,88 @@
 .navbar {
   display: flex;
-  justify-content: space-between; 
+  justify-content: space-between;
   align-items: center;
   padding: 18px 16px;
   background: linear-gradient(90deg, #1e3a8a, #2563eb);
   color: white;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  position: relative;
- 
-  z-index: 10; 
+
+  position: sticky;   /* important */
+  top: 0;             /* important */
+  z-index: 1000;      /* very important */
 }
+
 
 .logo {
   font-size: 20px;
   font-weight: 600;
 }
 
+.menu-btn {
+  font-size: 28px;
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
 .nav-links {
   display: flex;
-  gap: 16px;
-  padding-left: 8px;
+  gap: 20px;
+  align-items: center;
 }
 
 .nav-links a {
   color: white;
   text-decoration: none;
   font-weight: 500;
-  transition: 0.3s ease;
 }
 
-.nav-links a:hover {
-  color: #facc15;
-  transform: translateY(-2px);
-}
-
-.menu-btn {
-  display: none;
-  font-size: 28px;
-  cursor: pointer;
+.logout-btn {
   background: none;
   border: none;
+  color: white;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.close-btn {
+  display: none;
 }
 
 @media (max-width: 768px) {
-  .menu-btn {
-    display: block;
-    position: relative;
-    z-index: 20; 
-  }
 
   .nav-links {
     flex-direction: column;
     position: fixed;
     top: 0;
-    left: 0;
+    left: 0; 
     height: 100vh;
     width: 220px;
     background-color: #1e3a8a;
-    padding-top: 100px; 
-    transform: translateX(-100%); 
+    padding-top: 80px;
+    transform: translateX(-100%);
     transition: transform 0.3s ease-in-out;
-    box-shadow: 4px 0 12px rgba(0, 0, 0, 0.2);
-    z-index: 15; 
   }
 
   .nav-links.open {
     transform: translateX(0);
   }
 
-  .nav-links a {
+  .nav-links a,
+  .logout-btn {
     margin: 20px 0;
     font-size: 18px;
-    color: white;
-    font-weight: 500;
   }
-}
-.logout-btn{
-      margin-left: 10px;
-      cursor: pointer;
-      background: none;
-      border: none;
-      color: white;
-      font-weight: 500;
+
+  .close-btn {
+    display: block;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 22px;
+    cursor: pointer;
+  }
 }

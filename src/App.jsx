@@ -11,7 +11,7 @@ import Register from "./pages/Register";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [foundItems, setFoundItems] = useState([]); // ← YOU NEED THIS
+  const [foundItems, setFoundItems] = useState([]); 
 
   return (
     <>
@@ -52,15 +52,19 @@ function App() {
         />
 
         <Route
-          path="/report-found"
-          element={
-            isLoggedIn ? (
-              <FoundedItems foundItems={foundItems} />
-            ) : (
-              <Navigate to="/login" />
-            )
-          }
-        />
+  path="/report-found"
+  element={
+    isLoggedIn ? (
+      <FoundedItems 
+        foundItems={foundItems} 
+        setFoundItems={setFoundItems} 
+      />
+    ) : (
+      <Navigate to="/login" />
+    )
+  }
+/>
+
 
         <Route
           path="/dashboard"

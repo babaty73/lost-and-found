@@ -12,13 +12,22 @@ function Navbar({ setIsLoggedIn }) {
 
   return (
     <nav className="navbar">
-      <div className="logo">ASTU Lost & Found</div>
-
-      <button className="menu-btn" onClick={() => setMenuOpen(!menuOpen)}>
+      
+      {/* Hamburger LEFT */}
+      <button className="menu-btn" onClick={() => setMenuOpen(true)}>
         ☰
       </button>
 
+      <div className="logo">ASTU Lost & Found</div>
+
+      {/* Sidebar */}
       <div className={`nav-links ${menuOpen ? "open" : ""}`}>
+
+        {/* X Close Button */}
+        <button className="close-btn" onClick={() => setMenuOpen(false)}>
+          ✕
+        </button>
+
         <Link to="/home" onClick={() => setMenuOpen(false)}>Home</Link>
         <Link to="/report-lost" onClick={() => setMenuOpen(false)}>Report Lost Item</Link>
         <Link to="/report-found" onClick={() => setMenuOpen(false)}>Founded Items</Link>

@@ -28,14 +28,16 @@
   gap: 15px;
 }
 
-.report-form input {
+.report-form input,
+.report-form select {
   padding: 12px;
   border-radius: 6px;
   border: 1px solid #ddd;
   font-size: 15px;
 }
 
-.report-form input:focus {
+.report-form input:focus,
+.report-form select:focus {
   outline: none;
   border-color: #1e3a8a;
 }
@@ -48,6 +50,7 @@
   cursor: pointer;
   font-weight: 500;
   color: #1e3a8a;
+  transition: 0.2s ease;
 }
 
 .file-label:hover {
@@ -64,6 +67,7 @@
   width: 120px;
   margin: 10px auto;
   border-radius: 8px;
+  display: block;
 }
 
 .submit-btn {
@@ -75,8 +79,22 @@
   cursor: pointer;
   font-size: 16px;
   margin-top: 10px;
+  transition: 0.2s ease;
 }
 
 .submit-btn:hover {
   background-color: #162d6b;
+}
+
+/* Category dropdown specific */
+.report-form select {
+  background-color: white;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+.report-form select option {
+  color: black;
 }

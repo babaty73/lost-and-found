@@ -93,7 +93,6 @@
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
-/* Responsive */
 @media (max-width: 900px) {
   .home-hero {
     flex-direction: column-reverse;

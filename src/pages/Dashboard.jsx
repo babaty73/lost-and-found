@@ -27,20 +27,8 @@ function Dashboard({ foundItems }) {
   return (
     <div className="dashboard-container">
       <h1 className="fade-in">Dashboard</h1>
-      <p className="dashboard-subtitle fade-in">
-        Manage all found items from here.
-      </p>
+     
 
-      {/* Search Bar */}
-      <div className="search-container fade-in">
-        <input
-          type="text"
-          placeholder="Search items by name"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="search-input"
-        />
-      </div>
 
       {/* Stats Section */}
       <div className={`stats-container ${animate ? "show" : ""}`}>
@@ -55,19 +43,6 @@ function Dashboard({ foundItems }) {
         </div>
       </div>
 
-      {/* Cards */}
-      {filteredItems.length === 0 ? (
-        <div className="empty-state fade-in">
-          <h3>No items found</h3>
-          <p>Items matching your search will appear here.</p>
-        </div>
-      ) : (
-        <div className="cards-container">
-          {filteredItems.map((item, index) => (
-            <ItemCard key={index} item={item} />
-          ))}
-        </div>
-      )}
     </div>
   );
 }
