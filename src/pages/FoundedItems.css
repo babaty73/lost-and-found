@@ -54,11 +54,7 @@
 /* Grid */
 .items-grid {
   display: grid;
-<<<<<<< HEAD
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-=======
-  grid-template-columns: repeat(auto-fill, minmax(250px,280px));
->>>>>>> a8f95e0 (Debugged responsiveness issue)
+  grid-template-columns: repeat(auto-fit, minmax(280px, 250px));
   gap: 25px;
 }
 
