@@ -6,6 +6,7 @@ import Home from "./pages/Home";
 import ReportLost from "./pages/ReportLost";
 import FoundedItems from "./pages/FoundedItems";
 import Dashboard from "./pages/Dashboard";
+import Admin from "./pages/Admin";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 
@@ -87,6 +88,17 @@ function App() {
           element={
             isLoggedIn ? (
               <Dashboard foundItems={foundItems} />
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
+
+        <Route
+          path="/admin"
+          element={
+            isLoggedIn ? (
+              <Admin foundItems={foundItems} setFoundItems={setFoundItems} />
             ) : (
               <Navigate to="/login" />
             )

@@ -32,6 +32,7 @@ function Navbar({ setIsLoggedIn }) {
         <Link to="/report-lost" onClick={() => setMenuOpen(false)}>Report Lost Item</Link>
         <Link to="/report-found" onClick={() => setMenuOpen(false)}>Founded Items</Link>
         <Link to="/dashboard" onClick={() => setMenuOpen(false)}>Dashboard</Link>
+        <Link to="/admin" onClick={() => setMenuOpen(false)}>Admin Requests</Link>
 
         <button className="logout-btn" onClick={handleLogout}>
           Logout
