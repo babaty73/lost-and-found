@@ -19,9 +19,12 @@ function ReportLost({ foundItems, setFoundItems }) {
     if (e.target.name === "image") {
       const file = e.target.files[0];
       if (file) {
-        const imageURL = URL.createObjectURL(file);
-        setForm({ ...form, image: imageURL });
-        setFileName(file.name);
+        const reader = new FileReader();
+        reader.onload = () => {
+          setForm({ ...form, image: reader.result });
+          setFileName(file.name);
+        };
+        reader.readAsDataURL(file);
       }
     } else {
       setForm({ ...form, [e.target.name]: e.target.value });
@@ -31,11 +34,13 @@ function ReportLost({ foundItems, setFoundItems }) {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    setFoundItems([
-  ...foundItems,
-  { ...form, status: "available" }
-]);
+    const newItem = {
+      ...form,
+      id: Date.now().toString(),
+      status: "available",
+    };
 
+    setFoundItems([...foundItems, newItem]);
 
     alert("Your report was successfully submitted!");
 

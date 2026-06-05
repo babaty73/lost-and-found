@@ -67,9 +67,9 @@ function FoundedItems({ foundItems, setFoundItems }) {
         <div className="items-grid">
           {filteredItems.map((item) => (
             <ItemCard
-              key={item.id || item.name + item.date} // unique key
+              key={item.id || `${item.name}-${item.date}`}
               item={item}
-              updateItemStatus={updateItemStatus} // pass function
+              updateItemStatus={updateItemStatus}
             />
           ))}
         </div>
