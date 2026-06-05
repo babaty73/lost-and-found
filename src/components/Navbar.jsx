@@ -20,6 +20,8 @@ function Navbar({ setIsLoggedIn }) {
 
       <div className="logo">ASTU Lost & Found</div>
 
+      {menuOpen && <div className="nav-overlay" onClick={() => setMenuOpen(false)} />}
+
       {/* Sidebar */}
       <div className={`nav-links ${menuOpen ? "open" : ""}`}>
 
