@@ -11,7 +11,14 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(() => {
+    try {
+      return localStorage.getItem("isLoggedIn") === "true";
+    } catch (error) {
+      console.error("Failed to load login state from localStorage:", error);
+      return false;
+    }
+  });
   const [foundItems, setFoundItems] = useState(() => {
     try {
       const stored = localStorage.getItem("foundItems");
@@ -29,6 +36,14 @@ function App() {
       console.error("Failed to save found items to localStorage:", error);
     }
   }, [foundItems]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem("isLoggedIn", isLoggedIn ? "true" : "false");
+    } catch (error) {
+      console.error("Failed to save login state to localStorage:", error);
+    }
+  }, [isLoggedIn]);
 
   return (
     <>
