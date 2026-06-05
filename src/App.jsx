@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 
 import Navbar from "./components/Navbar";
@@ -11,7 +11,23 @@ import Register from "./pages/Register";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [foundItems, setFoundItems] = useState([]); 
+  const [foundItems, setFoundItems] = useState(() => {
+    try {
+      const stored = localStorage.getItem("foundItems");
+      return stored ? JSON.parse(stored) : [];
+    } catch (error) {
+      console.error("Failed to load found items from localStorage:", error);
+      return [];
+    }
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem("foundItems", JSON.stringify(foundItems));
+    } catch (error) {
+      console.error("Failed to save found items to localStorage:", error);
+    }
+  }, [foundItems]);
 
   return (
     <>
