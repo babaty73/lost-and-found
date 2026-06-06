@@ -4,6 +4,7 @@ import "./ReportLost.css";
 
 function ReportLost({ foundItems, setFoundItems }) {
   const navigate = useNavigate();
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const [form, setForm] = useState({
     name: "",
@@ -42,9 +43,11 @@ function ReportLost({ foundItems, setFoundItems }) {
 
     setFoundItems([...foundItems, newItem]);
 
-    alert("Your report was successfully submitted!");
+    setShowSuccess(true);
 
-    navigate("/report-found");
+    setTimeout(() => {
+      navigate("/report-found");
+    }, 2000);
 
     // reset form properly
     setForm({
@@ -60,6 +63,16 @@ function ReportLost({ foundItems, setFoundItems }) {
 
   return (
     <div className="report-container">
+      {showSuccess && (
+        <div className="success-overlay">
+          <div className="success-card">
+            <div className="success-icon">✓</div>
+            <h2>Report Submitted!</h2>
+            <p>Thank you for your submission. Redirecting...</p>
+          </div>
+        </div>
+      )}
+
       <div className="report-card">
         <h1>Report Found Item</h1>
 
