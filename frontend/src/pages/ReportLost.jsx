@@ -115,6 +115,7 @@ function ReportLost({ foundItems, setFoundItems }) {
             <option value="Electronics">Electronics</option>
             <option value="Book">Book</option>
             <option value="Clothing">Clothing</option>
+            <option value="Other">Other</option>
           </select>
 
           {/* Custom File Upload */}

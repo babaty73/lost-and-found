@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-
+import api from "./services/api"
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import ReportLost from "./pages/ReportLost";
@@ -29,13 +29,37 @@ function App() {
     }
   });
 
-  useEffect(() => {
+useEffect(() => {
+  const getData = async () => {
     try {
-      localStorage.setItem("foundItems", JSON.stringify(foundItems));
-    } catch (error) {
-      console.error("Failed to save found items to localStorage:", error);
+      const res = await api.get("/items");
+
+      console.log("Backend:", res.data);
+
+      // later:
+      // setFoundItems(res.data)
+
+    } catch (err) {
+      console.error(err);
     }
-  }, [foundItems]);
+  };
+
+  getData();
+
+}, []);
+
+
+useEffect(() => {
+  try {
+    localStorage.setItem(
+      "foundItems",
+      JSON.stringify(foundItems)
+    );
+  } catch (error) {
+    console.error(error);
+  }
+
+}, [foundItems]);
 
   useEffect(() => {
     try {
