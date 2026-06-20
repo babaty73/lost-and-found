@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import api from "../services/api";
 import "./ReportLost.css";
 
 function ReportLost({ foundItems, setFoundItems }) {
@@ -32,33 +33,35 @@ function ReportLost({ foundItems, setFoundItems }) {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const newItem = {
       ...form,
-      id: Date.now().toString(),
       status: "available",
     };
 
-    setFoundItems([...foundItems, newItem]);
+    try {
+      const response = await api.post("/items", newItem);
+      setFoundItems([...foundItems, response.data]);
+      setShowSuccess(true);
 
-    setShowSuccess(true);
+      setTimeout(() => {
+        navigate("/report-found");
+      }, 2000);
 
-    setTimeout(() => {
-      navigate("/report-found");
-    }, 2000);
-
-    // reset form properly
-    setForm({
-      name: "",
-      location: "",
-      date: "",
-      category: "",
-      image: null,
-    });
-
-    setFileName("");
+      setForm({
+        name: "",
+        location: "",
+        date: "",
+        category: "",
+        image: null,
+      });
+      setFileName("");
+    } catch (error) {
+      console.error("Failed to submit report:", error);
+      alert("Failed to submit report. Please try again.");
+    }
   };
 
   return (
