@@ -1,3 +1,4 @@
+import api from "../services/api";
 import "./Admin.css";
 
 function Admin({ foundItems, setFoundItems }) {
@@ -5,9 +6,22 @@ function Admin({ foundItems, setFoundItems }) {
 
   const handleContacted = (item) => {
     const updatedItems = foundItems.map((currentItem) =>
-      currentItem === item ? { ...currentItem, status: "contacted" } : currentItem
+      currentItem._id === item._id ? { ...currentItem, status: "contacted" } : currentItem
     );
     setFoundItems(updatedItems);
+  };
+
+  const handleDelete = async (item) => {
+    const confirmed = window.confirm("Are you sure you want to delete this item?");
+    if (!confirmed) return;
+
+    try {
+      await api.delete(`/items/${item._id}`);
+      setFoundItems(foundItems.filter((currentItem) => currentItem._id !== item._id));
+    } catch (error) {
+      console.error("Failed to delete item", error);
+      window.alert("Unable to delete item. Please try again.");
+    }
   };
 
   return (
@@ -22,7 +36,7 @@ function Admin({ foundItems, setFoundItems }) {
       ) : (
         <div className="admin-grid">
           {pendingRequests.map((item) => (
-            <div className="admin-card" key={item.id || `${item.name}-${item.date}`}> 
+            <div className="admin-card" key={item._id || item.id || `${item.name}-${item.date}`}>
               <div className="admin-card-header">
                 <h2>{item.name}</h2>
                 <span className="admin-status">{item.status}</span>
@@ -50,12 +64,20 @@ function Admin({ foundItems, setFoundItems }) {
                 Use the name and ID above to contact the claimant.
               </p>
 
-              <button
-                className="admin-contacted-btn"
-                onClick={() => handleContacted(item)}
-              >
-                Mark Contacted
-              </button>
+              <div className="admin-actions">
+                <button
+                  className="admin-contacted-btn"
+                  onClick={() => handleContacted(item)}
+                >
+                  Mark Contacted
+                </button>
+                <button
+                  className="admin-delete-btn"
+                  onClick={() => handleDelete(item)}
+                >
+                  Delete Item
+                </button>
+              </div>
             </div>
           ))}
         </div>
