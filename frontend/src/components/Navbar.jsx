@@ -2,11 +2,12 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import "./Navbar.css";
 
-function Navbar({ setIsLoggedIn }) {
+function Navbar({ setIsLoggedIn, setUserRole, userRole }) {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const handleLogout = () => {
     setIsLoggedIn(false);
+    setUserRole("user");
     setMenuOpen(false);
   };
 
@@ -34,7 +35,9 @@ function Navbar({ setIsLoggedIn }) {
         <Link to="/report-lost" onClick={() => setMenuOpen(false)}>Report Lost Item</Link>
         <Link to="/report-found" onClick={() => setMenuOpen(false)}>Founded Items</Link>
         <Link to="/dashboard" onClick={() => setMenuOpen(false)}>Dashboard</Link>
-        <Link to="/admin" onClick={() => setMenuOpen(false)}>Admin Requests</Link>
+        {userRole === "admin" && (
+          <Link to="/admin" onClick={() => setMenuOpen(false)}>Admin Requests</Link>
+        )}
 
         <button className="logout-btn" onClick={handleLogout}>
           Logout

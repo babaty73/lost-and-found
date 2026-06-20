@@ -19,59 +19,41 @@ function App() {
       return false;
     }
   });
-  const [foundItems, setFoundItems] = useState(() => {
+  const [userRole, setUserRole] = useState(() => {
     try {
-      const stored = localStorage.getItem("foundItems");
-      return stored ? JSON.parse(stored) : [];
+      return localStorage.getItem("userRole") || "user";
     } catch (error) {
-      console.error("Failed to load found items from localStorage:", error);
-      return [];
+      console.error("Failed to load user role from localStorage:", error);
+      return "user";
     }
   });
+  const [foundItems, setFoundItems] = useState([]);
 
-useEffect(() => {
-  const getData = async () => {
-    try {
-      const res = await api.get("/items");
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const res = await api.get("/items");
+        setFoundItems(res.data || []);
+      } catch (err) {
+        console.error(err);
+      }
+    };
 
-      console.log("Backend:", res.data);
-
-      // later:
-      // setFoundItems(res.data)
-
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  getData();
-
-}, []);
-
-
-useEffect(() => {
-  try {
-    localStorage.setItem(
-      "foundItems",
-      JSON.stringify(foundItems)
-    );
-  } catch (error) {
-    console.error(error);
-  }
-
-}, [foundItems]);
+    getData();
+  }, []);
 
   useEffect(() => {
     try {
       localStorage.setItem("isLoggedIn", isLoggedIn ? "true" : "false");
+      localStorage.setItem("userRole", userRole);
     } catch (error) {
       console.error("Failed to save login state to localStorage:", error);
     }
-  }, [isLoggedIn]);
+  }, [isLoggedIn, userRole]);
 
   return (
     <>
-      {isLoggedIn && <Navbar setIsLoggedIn={setIsLoggedIn} />}
+      {isLoggedIn && <Navbar setIsLoggedIn={setIsLoggedIn} setUserRole={setUserRole} userRole={userRole} />} 
 
       <Routes>
         <Route
@@ -83,7 +65,7 @@ useEffect(() => {
 
         <Route
           path="/login"
-          element={<Login setIsLoggedIn={setIsLoggedIn} />}
+          element={<Login setIsLoggedIn={setIsLoggedIn} setUserRole={setUserRole} />}
         />
 
         <Route path="/register" element={<Register />} />
@@ -136,10 +118,10 @@ useEffect(() => {
         <Route
           path="/admin"
           element={
-            isLoggedIn ? (
+            isLoggedIn && userRole === "admin" ? (
               <Admin foundItems={foundItems} setFoundItems={setFoundItems} />
             ) : (
-              <Navigate to="/login" />
+              <Navigate to="/home" />
             )
           }
         />
