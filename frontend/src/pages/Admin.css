@@ -51,6 +51,19 @@
   background: #1558c8;
 }
 
+.admin-delete-btn {
+  border: none;
+  background: #1f6feb;
+  color: #fff;
+  padding: 0.85rem 1rem;
+  border-radius: 0.75rem;
+  cursor: pointer;
+}
+
+.admin-delete-btn:hover {
+  background: #1558c8;
+}
+
 .admin-empty {
   background: #fff;
   border-radius: 1rem;

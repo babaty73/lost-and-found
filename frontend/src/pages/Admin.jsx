@@ -4,11 +4,17 @@ import "./Admin.css";
 function Admin({ foundItems, setFoundItems }) {
   const pendingRequests = foundItems.filter((item) => item.status === "pending");
 
-  const handleContacted = (item) => {
-    const updatedItems = foundItems.map((currentItem) =>
-      currentItem._id === item._id ? { ...currentItem, status: "contacted" } : currentItem
-    );
-    setFoundItems(updatedItems);
+  const handleContacted = async (item) => {
+    try {
+      const response = await api.patch(`/items/${item._id}`, { status: "contacted" });
+      const updatedItems = foundItems.map((currentItem) =>
+        currentItem._id === item._id ? response.data : currentItem
+      );
+      setFoundItems(updatedItems);
+    } catch (error) {
+      console.error("Failed to update item status", error);
+      window.alert("Unable to mark item contacted. Please try again.");
+    }
   };
 
   const handleDelete = async (item) => {

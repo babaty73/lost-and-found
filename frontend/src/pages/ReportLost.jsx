@@ -6,6 +6,7 @@ import "./ReportLost.css";
 function ReportLost({ foundItems, setFoundItems }) {
   const navigate = useNavigate();
   const [showSuccess, setShowSuccess] = useState(false);
+  const MAX_IMAGE_SIZE = 4 * 1024 * 1024; // 4MB
 
   const [form, setForm] = useState({
     name: "",
@@ -21,6 +22,13 @@ function ReportLost({ foundItems, setFoundItems }) {
     if (e.target.name === "image") {
       const file = e.target.files[0];
       if (file) {
+        if (file.size > MAX_IMAGE_SIZE) {
+          alert("Please upload an image smaller than 4MB.");
+          setFileName("");
+          setForm({ ...form, image: null });
+          return;
+        }
+
         const reader = new FileReader();
         reader.onload = () => {
           setForm({ ...form, image: reader.result });
