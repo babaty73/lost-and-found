@@ -1,92 +1,69 @@
-.status {
-  display: inline-block;
-  margin-top: 10px;
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: 13px;
-  font-weight: 600;
-  text-transform: capitalize;
-}
-
-.item-card{
+.item-card {
+  display: block;
   background-color: white;
   padding: 25px;
   border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
-.item-card img{
+
+.item-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
+}
+
+.item-card img {
   width: 100%;
   display: block;
   height: 200px;
   object-fit: cover;
   border-radius: 8px;
 }
-.status.available {
+
+.item-card-no-image {
+  width: 100%;
+  height: 200px;
+  border-radius: 8px;
+  background: #f1f5f9;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+}
+
+.item-status {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.item-status-active {
   background-color: #dcfce7;
   color: #166534;
 }
 
-.status.pending {
+.item-status-under_review {
   background-color: #fef3c7;
   color: #92400e;
 }
 
-.claim-btn {
-  margin-top: 12px;
-  padding: 8px 14px;
-  background-color: #1e3a8a;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
+.item-status-unclaimed {
+  background-color: #e5e7eb;
+  color: #374151;
 }
 
-.claim-btn:hover {
-  background-color: #162d6b;
-}
-.claim-btn {
-  padding: 8px 12px;
-  background-color: #1e3a8a;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  margin-top: 8px;
+.item-status-resolved {
+  background-color: #dbeafe;
+  color: #1e40af;
 }
 
-.claim-btn:hover {
-  background-color: #16307a;
-}
-
-.claim-form {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-top: 10px;
-}
-
-.claim-form input {
-  padding: 8px;
-  border-radius: 5px;
-  border: 1px solid #ddd;
-}
-
-.claim-form button {
-  padding: 8px;
-  border-radius: 5px;
-  border: none;
-  cursor: pointer;
-}
-
-.claim-form button[type="submit"] {
-  background-color: #1e3a8a;
-  color: white;
-}
-
-.claim-form button[type="submit"]:hover {
-  background-color: #16307a;
-}
-
-.claim-form button[type="button"] {
-  background-color: #ddd;
+.item-status-cancelled {
+  background-color: #fee2e2;
+  color: #991b1b;
 }

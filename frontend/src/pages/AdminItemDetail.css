@@ -1,0 +1,226 @@
+.back-link {
+  display: inline-block;
+  margin-bottom: 16px;
+  color: #1e3a8a;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.admin-item-detail-card {
+  background: white;
+  border-radius: 1rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  padding: 2rem;
+}
+
+.admin-item-detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 1rem;
+}
+
+.admin-item-detail-header h1 {
+  color: #1e3a8a;
+  margin: 0;
+}
+
+.item-status {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+.item-status-active { background-color: #dcfce7; color: #166534; }
+.item-status-under_review { background-color: #fef3c7; color: #92400e; }
+.item-status-unclaimed { background-color: #e5e7eb; color: #374151; }
+.item-status-resolved { background-color: #dbeafe; color: #1e40af; }
+.item-status-cancelled { background-color: #fee2e2; color: #991b1b; }
+
+.admin-item-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 24px;
+  margin-bottom: 1.5rem;
+}
+
+.admin-item-detail-grid h2 {
+  font-size: 16px;
+  color: #1e3a8a;
+  margin-bottom: 8px;
+}
+
+.admin-item-detail-grid p {
+  font-size: 14px;
+  margin: 4px 0;
+}
+
+.admin-item-images {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.admin-item-images img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.admin-item-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.admin-secondary-btn {
+  border: 1px solid #1e3a8a;
+  background: white;
+  color: #1e3a8a;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.admin-secondary-btn:hover {
+  background: #eef2ff;
+}
+
+.admin-duplicates {
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-radius: 8px;
+  padding: 14px;
+  margin-bottom: 1.5rem;
+  font-size: 14px;
+}
+
+.admin-claims-section,
+.admin-audit-section {
+  border-top: 1px solid #e5e7eb;
+  padding-top: 1.5rem;
+  margin-top: 1rem;
+}
+
+.admin-claims-section h2,
+.admin-audit-section h2 {
+  color: #1e3a8a;
+  margin-bottom: 12px;
+}
+
+.claim-row {
+  background: #f9fafb;
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+  font-size: 14px;
+}
+
+.claim-row-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.claim-status {
+  padding: 4px 10px;
+  border-radius: 14px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.claim-status-pending { background: #fef3c7; color: #92400e; }
+.claim-status-verified { background: #dcfce7; color: #166534; }
+.claim-status-rejected { background: #fee2e2; color: #991b1b; }
+.claim-status-cancelled { background: #e5e7eb; color: #374151; }
+
+.claim-meta {
+  color: #6b7280;
+  font-size: 12px;
+}
+
+.claim-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.claim-actions input {
+  flex: 1;
+  min-width: 140px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  font-size: 13px;
+}
+
+.admin-verify-btn {
+  background: #166534;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.admin-reject-btn {
+  background: #991b1b;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.admin-audit-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 13px;
+  color: #374151;
+}
+
+.admin-audit-list li {
+  padding: 6px 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.audit-time {
+  color: #6b7280;
+}
+
+.audit-action {
+  font-weight: 600;
+}
+
+.form-error {
+  background: #fee2e2;
+  color: #991b1b;
+  padding: 10px 14px;
+  border-radius: 6px;
+  font-size: 14px;
+  margin-bottom: 15px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

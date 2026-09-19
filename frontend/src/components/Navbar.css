@@ -138,3 +138,8 @@
     opacity: 1;
   }
 }
+
+.admin-link {
+  opacity: 0.75;
+  font-size: 14px;
+}
