@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import "./Login.css";
+import "./Auth.css";
 
-function Login({ setIsLoggedIn, setUserRole }) {
+function Login({ setIsLoggedIn }) {
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
@@ -18,8 +18,6 @@ function Login({ setIsLoggedIn, setUserRole }) {
     e.preventDefault();
 
     setIsLoggedIn(true);
-    const role = form.email.toLowerCase().includes("admin") ? "admin" : "user";
-    setUserRole(role);
     navigate("/home");
   };
 
