@@ -7,36 +7,29 @@ function Home() {
     <div className="home-container">
       <div className="home-hero">
         <div className="home-text">
-          <h1>
-            Welcome to ASTU Digital <br />
-            "Lost &amp; Found"
-          </h1>
+          <h1>Welcome to ASTU Digital <br />"Lost & Found"</h1>
 
           <p className="home-description">
-            Lost something on campus? Report it in a couple of minutes — no account
-            needed. Found something? Bring it to the ASTU Student Union Lost &amp;
-            Found office and it'll be listed here so its owner can find it.
+            Worried about losing your belongings on campus? Don’t stress!{" "}
+            <strong>ASTU Digital Lost & Found</strong> makes it easy to report 
+            items you’ve found or lost, search for recovered belongings, 
+            and help your fellow students get their property back quickly.{" "}
+            <em>Your campus life just got safer and smarter!</em>
           </p>
 
           <div className="home-buttons">
             <Link to="/report-lost">
-              <button className="home-button">Lost something? Report it.</button>
+              <button className="home-button">Report Found Item</button>
             </Link>
 
-            <Link to="/found-items">
-              <button className="home-button">Looking for something? Search found items.</button>
+            <Link to="/report-found">
+              <button className="home-button">Search for Found Items</button>
             </Link>
           </div>
-
-          <p className="home-note">
-            Found something? Bring it to the <strong>ASTU Student Union Lost &amp; Found
-            office</strong> — the office registers it and it will appear in the found-items
-            list here.
-          </p>
         </div>
 
         <div className="home-image-container">
-          <img src={image} alt="Student surprised after losing a personal item" className="home-image" />
+          <img src={image} alt="Shocked" className="home-image" />
         </div>
       </div>
     </div>

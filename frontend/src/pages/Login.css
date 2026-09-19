@@ -1,101 +1,65 @@
-.login-container {
-  min-height: 100vh;
+html, body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  box-sizing: border-box;
+}
+
+*, *::before, *::after {
+  box-sizing: inherit;
+}
+
+.auth-container {
+  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(135deg, #1e3a8a, #3b82f6);
-  padding: 20px;
+  background: linear-gradient(to right, #1e3a8a, #2563eb);
 }
 
-.login-card {
+.auth-card {
   background: white;
-  width: 100%;
-  max-width: 400px;
   padding: 40px;
-  border-radius: 16px;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-  animation: fadeIn 0.6s ease-in-out;
+  width: 350px;
+  border-radius: 10px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  text-align: center;
 }
 
-.login-card h1 {
-  text-align: center;
-  margin-bottom: 10px;
+.auth-card h2 {
+  margin-bottom: 20px;
   color: #1e3a8a;
 }
 
-.login-subtitle {
-  text-align: center;
-  margin-bottom: 30px;
-  color: #666;
-  font-size: 14px;
-}
-
-.input-group {
-  margin-bottom: 20px;
-  display: flex;
-  flex-direction: column;
-}
-
-.input-group label {
-  margin-bottom: 6px;
-  font-weight: 500;
-  color: #333;
-}
-
-.input-group input {
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid #ddd;
-  font-size: 14px;
-  transition: 0.3s;
-}
-
-.input-group input:focus {
-  outline: none;
-  border-color: #1e3a8a;
-  box-shadow: 0 0 0 2px rgba(30, 58, 138, 0.2);
-}
-
-.login-btn {
+.auth-card input {
   width: 100%;
-  padding: 12px;
-  background-color: #1e3a8a;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.auth-card button {
+  width: 100%;
+  padding: 10px;
+  background: #1e3a8a;
   color: white;
   border: none;
-  border-radius: 8px;
-  font-size: 15px;
+  border-radius: 5px;
   cursor: pointer;
-  transition: 0.3s;
 }
 
-.login-btn:hover {
-  background-color: #3b82f6;
+.auth-card button:hover {
+  background: #16307a;
 }
 
-.register-link {
-  margin-top: 20px;
-  text-align: center;
+.auth-switch {
+  margin-top: 15px;
   font-size: 14px;
-  color: #555;
 }
 
-.register-link span {
+.auth-switch a {
   color: #1e3a8a;
-  cursor: pointer;
-  font-weight: 600;
-}
-
-.register-link span:hover {
-  text-decoration: underline;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(15px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  font-weight: bold;
+  text-decoration: none;
 }

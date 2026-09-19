@@ -1,37 +1,43 @@
-import { Link } from "react-router-dom";
+import { useState } from "react";
 import "./ItemCard.css";
 
-const STATUS_LABELS = {
-  active: "Available",
-  under_review: "Claim(s) under review",
-  unclaimed: "Unclaimed",
-  resolved: "Returned",
-  cancelled: "Cancelled",
-};
+function ItemCard({ item, updateItemStatus }) {
+  const [claiming, setClaiming] = useState(false);
+  const [claimer, setClaimer] = useState({ name: "", id: "" });
 
-// A pure display card — no claim logic lives here anymore. Submitting a
-// claim now happens on the item's own detail page and is persisted by the
-// backend (see ItemDetail.jsx), not held in local component state.
-function ItemCard({ item }) {
-  const thumbnail = item.images?.[0];
-  const eventDate = item.eventDate ? new Date(item.eventDate).toLocaleDateString() : "";
+  const handleClaimClick = () => setClaiming(true);
+
+  const handleChange = (e) => setClaimer({ ...claimer, [e.target.name]: e.target.value });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const updatedItem = { ...item, status: "pending", claimer };
+    updateItemStatus(item, updatedItem);
+    setClaiming(false);
+    setClaimer({ name: "", id: "" });
+  };
 
   return (
-    <Link to={`/items/${item.id}`} className="item-card">
-      {thumbnail ? (
-        <img src={thumbnail} alt={`Photo of ${item.title}`} />
-      ) : (
-        <div className="item-card-no-image" aria-hidden="true">
-          No photo
-        </div>
-      )}
-      <h3>{item.title}</h3>
+    <div className="item-card">
+      <img src={item.image} alt={item.name} />
+      <h3>{item.name}</h3>
       <p>Location: {item.location}</p>
-      <p>Found: {eventDate}</p>
-      <p className={`item-status item-status-${item.status}`}>
-        {STATUS_LABELS[item.status] || item.status}
-      </p>
-    </Link>
+      <p>Date: {item.date}</p>
+      <p>Status: {item.status}</p>
+
+      {item.status === "available" && !claiming && (
+        <button className="claim-btn" onClick={handleClaimClick}>Claim</button>
+      )}
+
+      {claiming && (
+        <form className="claim-form" onSubmit={handleSubmit}>
+          <input type="text" name="name" placeholder="Your Name" value={claimer.name} onChange={handleChange} required />
+          <input type="text" name="id" placeholder="phone number" value={claimer.id} onChange={handleChange} required />
+          <button type="submit">Submit Claim</button>
+          <button type="button" onClick={() => setClaiming(false)}>Cancel</button>
+        </form>
+      )}
+    </div>
   );
 }
 

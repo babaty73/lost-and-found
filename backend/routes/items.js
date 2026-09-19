@@ -1,52 +1,55 @@
 import express from "express";
-import {
-  listItems,
-  getItem,
-  createLostItem,
-  registerFoundItem,
-  getItemAdmin,
-  updateItem,
-  markUnclaimed,
-  resolveLostItem,
-  recordReturn,
-  deleteItem,
-  findPossibleDuplicates,
-} from "../controllers/itemController.js";
-import { createClaim, listClaimsForItem } from "../controllers/claimController.js";
-import { verifyToken, isAdmin } from "../middleware/auth.js";
-import { rateLimit } from "../middleware/rateLimit.js";
+import Item from "../models/Items.js";
 
 const router = express.Router();
 
-// Public reports/claims are the two most abuse-prone unauthenticated
-// endpoints in the whole app (no login gate can stop spam here by design —
-// see architecture notes) — so both get their own rate limit.
-const reportLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000,
-  max: 20,
-  message: "Too many reports submitted from this connection. Please try again later.",
-});
-const claimLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000,
-  max: 30,
-  message: "Too many claims submitted from this connection. Please try again later.",
+router.get("/", async (req, res) => {
+  try {
+    const items = await Item.find();
+    res.json(items);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to fetch items" });
+  }
 });
 
-// --- Public ---
-router.get("/", listItems);
-router.get("/:id", getItem);
-router.post("/lost", reportLimiter, createLostItem);
-router.post("/:itemId/claims", claimLimiter, createClaim);
+router.post("/", async (req, res) => {
+  try {
+    const newItem = await Item.create(req.body);
+    res.status(201).json(newItem);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to create item" });
+  }
+});
 
-// --- Admin only ---
-router.post("/found", verifyToken, isAdmin, registerFoundItem);
-router.get("/:id/admin", verifyToken, isAdmin, getItemAdmin);
-router.get("/:id/possible-duplicates", verifyToken, isAdmin, findPossibleDuplicates);
-router.get("/:itemId/claims", verifyToken, isAdmin, listClaimsForItem);
-router.patch("/:id", verifyToken, isAdmin, updateItem);
-router.patch("/:id/unclaimed", verifyToken, isAdmin, markUnclaimed);
-router.patch("/:id/resolve", verifyToken, isAdmin, resolveLostItem);
-router.post("/:id/return", verifyToken, isAdmin, recordReturn);
-router.delete("/:id", verifyToken, isAdmin, deleteItem);
+router.patch("/:id", async (req, res) => {
+  try {
+    const updatedItem = await Item.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+    if (!updatedItem) {
+      return res.status(404).json({ message: "Item not found" });
+    }
+    res.json(updatedItem);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to update item" });
+  }
+});
+
+router.delete("/:id", async (req, res) => {
+  try {
+    const deletedItem = await Item.findByIdAndDelete(req.params.id);
+    if (!deletedItem) {
+      return res.status(404).json({ message: "Item not found" });
+    }
+    res.json({ message: "Item deleted", item: deletedItem });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to delete item" });
+  }
+});
 
 export default router;

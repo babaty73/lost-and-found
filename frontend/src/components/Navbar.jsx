@@ -1,63 +1,47 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import "./Navbar.css";
 
-// Students never log in, so the main nav is always the same for every
-// visitor. The only thing that changes is a small "Admin" link/logout
-// button, driven by whether a Student Union staff member is currently
-// signed in (see App.jsx, which owns the adminUser state).
-function Navbar({ adminUser, onLogout }) {
+function Navbar({ setIsLoggedIn, setUserRole, userRole }) {
   const [menuOpen, setMenuOpen] = useState(false);
-  const navigate = useNavigate();
 
   const handleLogout = () => {
-    onLogout();
+    setIsLoggedIn(false);
+    setUserRole("user");
     setMenuOpen(false);
-    navigate("/home");
   };
 
   return (
     <nav className="navbar">
-      <button className="menu-btn" onClick={() => setMenuOpen(true)} aria-label="Open menu">
+      
+      {/* Hamburger LEFT */}
+      <button className="menu-btn" onClick={() => setMenuOpen(true)}>
         ☰
       </button>
 
-      <div className="logo">ASTU Lost &amp; Found</div>
+      <div className="logo">ASTU Lost & Found</div>
 
       {menuOpen && <div className="nav-overlay" onClick={() => setMenuOpen(false)} />}
 
+      {/* Sidebar */}
       <div className={`nav-links ${menuOpen ? "open" : ""}`}>
-        <button className="close-btn" onClick={() => setMenuOpen(false)} aria-label="Close menu">
+
+        {/* X Close Button */}
+        <button className="close-btn" onClick={() => setMenuOpen(false)}>
           ✕
         </button>
 
-        <Link to="/home" onClick={() => setMenuOpen(false)}>
-          Home
-        </Link>
-        <Link to="/report-lost" onClick={() => setMenuOpen(false)}>
-          Report Lost Item
-        </Link>
-        <Link to="/found-items" onClick={() => setMenuOpen(false)}>
-          Found Items
-        </Link>
-        <Link to="/how-it-works" onClick={() => setMenuOpen(false)}>
-          How It Works
-        </Link>
-
-        {adminUser ? (
-          <>
-            <Link to="/admin" onClick={() => setMenuOpen(false)}>
-              Admin Dashboard
-            </Link>
-            <button className="logout-btn" onClick={handleLogout}>
-              Logout ({adminUser.name})
-            </button>
-          </>
-        ) : (
-          <Link to="/admin/login" className="admin-link" onClick={() => setMenuOpen(false)}>
-            Student Union Staff Login
-          </Link>
+        <Link to="/home" onClick={() => setMenuOpen(false)}>Home</Link>
+        <Link to="/report-lost" onClick={() => setMenuOpen(false)}>Report Lost Item</Link>
+        <Link to="/report-found" onClick={() => setMenuOpen(false)}>Founded Items</Link>
+        <Link to="/dashboard" onClick={() => setMenuOpen(false)}>Dashboard</Link>
+        {userRole === "admin" && (
+          <Link to="/admin" onClick={() => setMenuOpen(false)}>Admin Requests</Link>
         )}
+
+        <button className="logout-btn" onClick={handleLogout}>
+          Logout
+        </button>
       </div>
     </nav>
   );

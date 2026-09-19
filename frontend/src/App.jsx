@@ -1,80 +1,130 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-
+import api from "./services/api"
 import Navbar from "./components/Navbar";
-import AdminRoute from "./components/AdminRoute";
-import { getAdminUser, clearAdminSession } from "./services/adminAuth";
-
 import Home from "./pages/Home";
 import ReportLost from "./pages/ReportLost";
 import FoundedItems from "./pages/FoundedItems";
-import ItemDetail from "./pages/ItemDetail";
-import HowItWorks from "./pages/HowItWorks";
-import AdminLogin from "./pages/AdminLogin";
-import AdminDashboard from "./pages/AdminDashboard";
-import AdminRegisterFoundItem from "./pages/AdminRegisterFoundItem";
-import AdminItemsList from "./pages/AdminItemsList";
-import AdminItemDetail from "./pages/AdminItemDetail";
+import Dashboard from "./pages/Dashboard";
+import Admin from "./pages/Admin";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
 
-// Students never log in (see architecture notes) — every student-facing
-// route below is public, with no auth gate of any kind. The only thing
-// that is ever protected is the /admin/* section, and that protection is
-// enforced for real on the backend; AdminRoute here is just a UX nicety.
 function App() {
-  const [adminUser, setAdminUser] = useState(getAdminUser());
+  const [isLoggedIn, setIsLoggedIn] = useState(() => {
+    try {
+      return localStorage.getItem("isLoggedIn") === "true";
+    } catch (error) {
+      console.error("Failed to load login state from localStorage:", error);
+      return false;
+    }
+  });
+  const [userRole, setUserRole] = useState(() => {
+    try {
+      return localStorage.getItem("userRole") || "user";
+    } catch (error) {
+      console.error("Failed to load user role from localStorage:", error);
+      return "user";
+    }
+  });
+  const [foundItems, setFoundItems] = useState([]);
 
-  const handleLogout = () => {
-    clearAdminSession();
-    setAdminUser(null);
-  };
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const res = await api.get("/items");
+        setFoundItems(res.data || []);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    getData();
+  }, []);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem("isLoggedIn", isLoggedIn ? "true" : "false");
+      localStorage.setItem("userRole", userRole);
+    } catch (error) {
+      console.error("Failed to save login state to localStorage:", error);
+    }
+  }, [isLoggedIn, userRole]);
 
   return (
     <>
-      <Navbar adminUser={adminUser} onLogout={handleLogout} />
+      {isLoggedIn && <Navbar setIsLoggedIn={setIsLoggedIn} setUserRole={setUserRole} userRole={userRole} />} 
 
       <Routes>
-        <Route path="/" element={<Navigate to="/home" replace />} />
-        <Route path="/home" element={<Home />} />
-        <Route path="/report-lost" element={<ReportLost />} />
-        <Route path="/found-items" element={<FoundedItems />} />
-        <Route path="/items/:id" element={<ItemDetail />} />
-        <Route path="/how-it-works" element={<HowItWorks />} />
+        <Route
+          path="/"
+          element={
+            isLoggedIn ? <Navigate to="/home" /> : <Navigate to="/login" />
+          }
+        />
 
-        <Route path="/admin/login" element={<AdminLogin onLogin={setAdminUser} />} />
+        <Route
+          path="/login"
+          element={<Login setIsLoggedIn={setIsLoggedIn} setUserRole={setUserRole} />}
+        />
+
+        <Route path="/register" element={<Register />} />
+
+        <Route
+          path="/home"
+          element={isLoggedIn ? <Home /> : <Navigate to="/login" />}
+        />
+
+        <Route
+          path="/report-lost"
+          element={
+            isLoggedIn ? (
+              <ReportLost
+                foundItems={foundItems}
+                setFoundItems={setFoundItems}
+              />
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
+
+        <Route
+  path="/report-found"
+  element={
+    isLoggedIn ? (
+      <FoundedItems 
+        foundItems={foundItems} 
+        setFoundItems={setFoundItems} 
+      />
+    ) : (
+      <Navigate to="/login" />
+    )
+  }
+/>
+
+
+        <Route
+          path="/dashboard"
+          element={
+            isLoggedIn ? (
+              <Dashboard foundItems={foundItems} />
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
+
         <Route
           path="/admin"
           element={
-            <AdminRoute>
-              <AdminDashboard />
-            </AdminRoute>
+            isLoggedIn && userRole === "admin" ? (
+              <Admin foundItems={foundItems} setFoundItems={setFoundItems} />
+            ) : (
+              <Navigate to="/home" />
+            )
           }
         />
-        <Route
-          path="/admin/register-found"
-          element={
-            <AdminRoute>
-              <AdminRegisterFoundItem />
-            </AdminRoute>
-          }
-        />
-        <Route
-          path="/admin/items"
-          element={
-            <AdminRoute>
-              <AdminItemsList />
-            </AdminRoute>
-          }
-        />
-        <Route
-          path="/admin/items/:id"
-          element={
-            <AdminRoute>
-              <AdminItemDetail />
-            </AdminRoute>
-          }
-        />
-
-        <Route path="*" element={<Navigate to="/home" replace />} />
       </Routes>
     </>
   );
