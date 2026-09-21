@@ -40,7 +40,7 @@ function AdminLogin({ onLogin }) {
   return (
     <div className="auth-container">
       <form className="auth-card" onSubmit={handleSubmit}>
-        <h2>Student Union Admin Login</h2>
+        <h2>Admin Login</h2>
 
         {error && (
           <p className="auth-error" role="alert">
@@ -73,11 +73,6 @@ function AdminLogin({ onLogin }) {
         <button type="submit" disabled={submitting}>
           {submitting ? "Logging in..." : "Login"}
         </button>
-
-        <p className="auth-hint">
-          This login is for ASTU Student Union staff only. Students do not need an
-          account to report or search for items.
-        </p>
       </form>
     </div>
   );
