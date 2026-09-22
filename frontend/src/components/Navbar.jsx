@@ -54,7 +54,8 @@ function Navbar({ adminUser, onLogout }) {
             </button>
           </>
         ) : (
-          <Link>
+          <Link to="/admin/login" className="admin-link" onClick={() => setMenuOpen(false)}>
+            Student Union Staff Login
           </Link>
         )}
       </div>
