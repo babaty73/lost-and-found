@@ -155,6 +155,16 @@ function AdminItemDetail() {
     }
   };
 
+  const handleAcceptHandover = async () => {
+    setActionError("");
+    try {
+      await api.patch(`/items/${id}/accept-handover`, { receivedThrough: "Student Union" });
+      await load();
+    } catch (err) {
+      setActionError(err.response?.data?.message || "Failed to accept this handover.");
+    }
+  };
+
   const handleResolveLost = async () => {
     setActionError("");
     try {
@@ -201,6 +211,14 @@ function AdminItemDetail() {
         {actionError && (
           <p className="form-error" role="alert">
             {actionError}
+          </p>
+        )}
+
+        {item.status === "pending_handover" && (
+          <p className="pending-handover-banner">
+            This is an online report only — the Student Union has not received the
+            physical item yet. It is not publicly visible and cannot be claimed until
+            you accept the handover below.
           </p>
         )}
 
@@ -302,7 +320,12 @@ function AdminItemDetail() {
         </div>
 
         <div className="admin-item-actions">
-          {item.type === "found" && item.status !== "resolved" && !hasActiveClaim && (
+          {item.status === "pending_handover" && (
+            <button className="admin-accept-btn" onClick={handleAcceptHandover}>
+              Accept Physical Handover &amp; Publish
+            </button>
+          )}
+          {item.type === "found" && !["resolved", "pending_handover"].includes(item.status) && !hasActiveClaim && (
             <button className="admin-secondary-btn" onClick={handleMarkUnclaimed}>
               Mark Unclaimed
             </button>
@@ -335,7 +358,7 @@ function AdminItemDetail() {
           </div>
         )}
 
-        {item.type === "found" && (
+        {item.type === "found" && item.status !== "pending_handover" && (
           <div className="admin-claims-section">
             <h2>Claims ({claims.length})</h2>
             {claims.length === 0 ? (

@@ -3,6 +3,7 @@ import Claim from "../models/Claim.js";
 import identityProvider from "../services/identityProvider.js";
 import { missingFields } from "../utils/validation.js";
 import { logAction } from "../utils/audit.js";
+import { PUBLIC_VISIBLE_STATUSES, CLAIMABLE_STATUSES } from "./itemController.js";
 
 // POST /api/items/:itemId/claims — public. No student account exists to
 // authenticate this request; the claimantStudentId is an accountability
@@ -13,11 +14,16 @@ export const createClaim = async (req, res, next) => {
     const body = req.body || {};
 
     const item = await Item.findById(itemId);
-    if (!item) return res.status(404).json({ message: "Item not found." });
+    // A pending-handover (or otherwise non-public) item behaves exactly like
+    // one that doesn't exist here too — a claim attempt must never be how a
+    // public caller discovers an unpublished report.
+    if (!item || !PUBLIC_VISIBLE_STATUSES.includes(item.status)) {
+      return res.status(404).json({ message: "Item not found." });
+    }
     if (item.type !== "found") {
       return res.status(400).json({ message: "Only found items can be claimed." });
     }
-    if (["resolved", "cancelled"].includes(item.status)) {
+    if (!CLAIMABLE_STATUSES.includes(item.status)) {
       return res.status(409).json({ message: "This item is no longer open for claims." });
     }
 

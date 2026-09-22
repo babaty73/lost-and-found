@@ -27,8 +27,10 @@ function HowItWorks() {
         <div className="how-it-works-step fade-in">
           <h2>2. Found something?</h2>
           <p>
-            Bring it to the ASTU Student Union Lost &amp; Found office. Staff will
-            register it, and it will appear in the <Link to="/found-items">found items list</Link>.
+            <Link to="/report-found">Report it online</Link>, then bring the physical
+            item to the ASTU Student Union Lost &amp; Found office. It only appears in
+            the <Link to="/found-items">found items list</Link> after the office
+            receives it — your online report alone doesn't publish anything.
           </p>
         </div>
 

@@ -14,13 +14,14 @@ function Home() {
 
           <p className="home-description">
             Lost something on campus? Report it in a couple of minutes — no account
-            needed. Found something? Bring it to the ASTU Student Union Lost &amp;
-            Found office and it'll be listed here so its owner can find it.
+            needed. Found something? Report it online, then bring it to the ASTU
+            Student Union Lost &amp; Found office to complete the handover.
           </p>
 
           <div className="home-buttons">
-            <Link to="/report-lost">
-              <button className="home-button">Lost something? Report it.</button>
+
+            <Link to="/report-found">
+              <button className="home-button">Found something? Report it.</button>
             </Link>
 
             <Link to="/found-items">
@@ -29,9 +30,10 @@ function Home() {
           </div>
 
           <p className="home-note">
-            Found something? Bring it to the <strong>ASTU Student Union Lost &amp; Found
-            office</strong> — the office registers it and it will appear in the found-items
-            list here.
+            Reporting a found item online is only step one — it stays private until
+            you bring the physical item to the <strong>ASTU Student Union Lost &amp; Found
+            office</strong>. Once the office receives it, it's published here so its
+            owner can find it.
           </p>
         </div>
 

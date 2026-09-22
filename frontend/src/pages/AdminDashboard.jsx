@@ -42,6 +42,7 @@ function StatCard({ label, count, to }) {
 function AdminDashboard() {
   const activeLost = useCount({ type: "lost", status: "active" });
   const activeFound = useCount({ type: "found", status: "active" });
+  const pendingHandover = useCount({ __endpoint: "/items/found-reports/pending" });
   const underReview = useCount({ type: "found", status: "under_review" });
   const unclaimed = useCount({ type: "found", status: "unclaimed" });
   const resolved = useCount({ status: "resolved" });
@@ -68,6 +69,11 @@ function AdminDashboard() {
       </div>
 
       <div className="admin-stats-grid">
+        <StatCard
+          label="Pending Found Reports"
+          count={pendingHandover}
+          to="/admin/pending-found-reports"
+        />
         <StatCard label="Active Lost Reports" count={activeLost} to="/admin/items?type=lost&status=active" />
         <StatCard label="Active Found Items" count={activeFound} to="/admin/items?type=found&status=active" />
         <StatCard label="Items Under Review" count={underReview} to="/admin/items?type=found&status=under_review" />

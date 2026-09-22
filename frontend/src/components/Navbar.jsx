@@ -34,11 +34,11 @@ function Navbar({ adminUser, onLogout }) {
         <Link to="/home" onClick={() => setMenuOpen(false)}>
           Home
         </Link>
-        <Link to="/report-lost" onClick={() => setMenuOpen(false)}>
-          Report Lost Item
+        <Link to="/report-found" onClick={() => setMenuOpen(false)}>
+          Report Found Item
         </Link>
         <Link to="/found-items" onClick={() => setMenuOpen(false)}>
-          Found Items
+          Browse Found Items
         </Link>
         <Link to="/how-it-works" onClick={() => setMenuOpen(false)}>
           How It Works

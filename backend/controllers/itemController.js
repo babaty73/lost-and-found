@@ -44,6 +44,13 @@ const ITEM_UPDATE_ALLOWED_FIELDS = [
   "flaggedDuplicateOf",
 ];
 
+// A found item only becomes visible to the public once the Student Union has
+// actually received it — "pending_handover" is deliberately never in this
+// list. Nothing (not even an explicit ?status=pending_handover query) can
+// make it appear through the public endpoints below.
+export const PUBLIC_VISIBLE_STATUSES = ["active", "under_review", "unclaimed", "resolved", "cancelled"];
+export const CLAIMABLE_STATUSES = ["active", "under_review", "unclaimed"];
+
 // GET /api/items — public, filtered/paginated, sanitized.
 export const listItems = async (req, res, next) => {
   try {
@@ -53,11 +60,21 @@ export const listItems = async (req, res, next) => {
     if (type) query.type = type;
     if (category) query.category = category;
     if (location) query.location = { $regex: location, $options: "i" };
-    if (status) query.status = { $in: String(status).split(",") };
     if (search) query.$text = { $search: String(search) };
+
+    const requestedStatuses = status ? String(status).split(",") : PUBLIC_VISIBLE_STATUSES;
+    const allowedStatuses = requestedStatuses.filter((s) => PUBLIC_VISIBLE_STATUSES.includes(s));
 
     const pageNum = Math.max(parseInt(page, 10) || 1, 1);
     const limitNum = Math.min(Math.max(parseInt(limit, 10) || 20, 1), 50);
+
+    // Every requested status was filtered out (e.g. a caller asking only for
+    // status=pending_handover) — there is nothing public to return, and no
+    // need to even query the database.
+    if (allowedStatuses.length === 0) {
+      return res.json({ items: [], page: pageNum, limit: limitNum, total: 0, totalPages: 1 });
+    }
+    query.status = { $in: allowedStatuses };
 
     const [items, total] = await Promise.all([
       Item.find(query)
@@ -80,11 +97,15 @@ export const listItems = async (req, res, next) => {
   }
 };
 
-// GET /api/items/:id — public, sanitized.
+// GET /api/items/:id — public, sanitized. A pending-handover item behaves
+// exactly like one that doesn't exist — same 404, no distinguishing detail
+// leaked about whether it's pending vs. genuinely absent.
 export const getItem = async (req, res, next) => {
   try {
     const item = await Item.findById(req.params.id).lean();
-    if (!item) return res.status(404).json({ message: "Item not found." });
+    if (!item || !PUBLIC_VISIBLE_STATUSES.includes(item.status)) {
+      return res.status(404).json({ message: "Item not found." });
+    }
     res.json(toPublicItem(item));
   } catch (err) {
     next(err);
@@ -128,7 +149,10 @@ export const createLostItem = async (req, res, next) => {
   }
 };
 
-// POST /api/items/found — admin only. This is the Student Union's intake form.
+// POST /api/items/found — admin only. This is the Student Union directly
+// registering an item it already has physical possession of (no prior
+// online report) — so, unlike createFoundReport below, this goes straight
+// to "active" and intake is completed immediately.
 export const registerFoundItem = async (req, res, next) => {
   try {
     const body = req.body || {};
@@ -161,7 +185,7 @@ export const registerFoundItem = async (req, res, next) => {
       intake: {
         receivedThrough: body.intake?.receivedThrough || "Other",
         notes: body.intake?.notes || "",
-        receivedAt: isValidDate(body.intake?.receivedAt) ? body.intake.receivedAt : Date.now(),
+        receivedAt: isValidDate(body.intake?.receivedAt) ? body.intake.receivedAt : new Date(),
         registeredBy: req.user._id,
       },
       status: "active",
@@ -175,6 +199,132 @@ export const registerFoundItem = async (req, res, next) => {
     });
 
     res.status(201).json(toAdminItem(item));
+  } catch (err) {
+    next(err);
+  }
+};
+
+// POST /api/items/found-report — public. A student saying "I found this and
+// intend to bring it in" — NOT the Student Union confirming it has the item.
+// Creates a pending, non-public record; see acceptFoundHandover for the
+// separate, admin-only action that actually publishes it. Deliberately does
+// NOT call registerFoundItem — submitting a report and the Student Union
+// accepting physical custody are two different operations end to end.
+export const createFoundReport = async (req, res, next) => {
+  try {
+    const body = req.body || {};
+    const missing = missingFields(body, FOUND_REQUIRED_FIELDS);
+    if (missing.length) {
+      return res.status(400).json({ message: `Missing required field(s): ${missing.join(", ")}` });
+    }
+    if (!isValidDate(body.eventDate)) {
+      return res.status(400).json({ message: "A valid approximate date is required." });
+    }
+
+    const studentId = identityProvider.normalizeStudentId(body.finderStudentId);
+    if (!studentId) {
+      return res.status(400).json({ message: "A valid institutional student ID is required." });
+    }
+
+    const item = await Item.create({
+      type: "found",
+      title: body.title,
+      category: body.category,
+      description: body.description || "",
+      location: body.location,
+      eventDate: body.eventDate,
+      images: Array.isArray(body.images) ? body.images : [],
+      finder: {
+        type: "student",
+        studentId,
+        contact: body.finderContact || null,
+      },
+      // intake stays entirely unset — nothing has been physically received yet.
+      status: "pending_handover",
+    });
+
+    await logAction({
+      actorId: null,
+      action: "FOUND_ITEM_REPORTED",
+      itemId: item._id,
+      details: "Online found-item report submitted; awaiting physical handover.",
+    });
+
+    // Sanitized response — this is still a public endpoint. The student gets
+    // back just enough to know their submission was recorded.
+    res.status(201).json({
+      id: item._id,
+      type: item.type,
+      title: item.title,
+      status: item.status,
+      createdAt: item.createdAt,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// GET /api/items/found-reports/pending — admin only. The Student Union's
+// intake queue: online reports waiting on the physical item to actually
+// arrive. Full (unsanitized) detail, same as any other admin item view.
+export const listPendingFoundReports = async (req, res, next) => {
+  try {
+    const { page = 1, limit = 20 } = req.query;
+    const pageNum = Math.max(parseInt(page, 10) || 1, 1);
+    const limitNum = Math.min(Math.max(parseInt(limit, 10) || 20, 1), 50);
+
+    const query = { type: "found", status: "pending_handover" };
+    const [items, total] = await Promise.all([
+      Item.find(query)
+        .sort({ createdAt: 1 }) // oldest first — first in line at the office
+        .skip((pageNum - 1) * limitNum)
+        .limit(limitNum),
+      Item.countDocuments(query),
+    ]);
+
+    res.json({
+      items: items.map(toAdminItem),
+      page: pageNum,
+      limit: limitNum,
+      total,
+      totalPages: Math.ceil(total / limitNum) || 1,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// PATCH /api/items/:id/accept-handover — admin only. The one action that
+// means "the Student Union physically has this item now." This is the only
+// path that can move a found item out of "pending_handover", and the only
+// one that makes it public. It is intentionally separate from updateItem —
+// accepting custody is a distinct, audited decision, not a field edit.
+export const acceptFoundHandover = async (req, res, next) => {
+  try {
+    const item = await Item.findById(req.params.id);
+    if (!item) return res.status(404).json({ message: "Item not found." });
+    if (item.type !== "found" || item.status !== "pending_handover") {
+      return res.status(409).json({ message: "This item is not a pending found-item report." });
+    }
+
+    const body = req.body || {};
+    item.status = "active";
+    item.intake = {
+      receivedThrough: body.receivedThrough || "Student Union",
+      notes: body.notes || "",
+      receivedAt: new Date(),
+      registeredBy: req.user._id,
+    };
+    await item.save();
+
+    await logAction({
+      actorId: req.user._id,
+      action: "FOUND_ITEM_ACCEPTED",
+      itemId: item._id,
+      details: `Physical item received via ${item.intake.receivedThrough}; now publicly listed.`,
+    });
+
+    res.json(toAdminItem(item));
   } catch (err) {
     next(err);
   }
@@ -229,6 +379,9 @@ export const markUnclaimed = async (req, res, next) => {
     if (!item) return res.status(404).json({ message: "Item not found." });
     if (item.type !== "found") {
       return res.status(400).json({ message: "Only found items can be marked unclaimed." });
+    }
+    if (item.status === "pending_handover") {
+      return res.status(409).json({ message: "This item has not been received yet — accept the handover first." });
     }
 
     const hasActiveClaim = await Claim.exists({ item: item._id, status: { $in: ["pending", "verified"] } });

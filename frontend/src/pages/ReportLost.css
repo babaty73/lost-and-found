@@ -218,3 +218,18 @@
   opacity: 0.6;
   cursor: not-allowed;
 }
+
+.found-report-steps {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 8px;
+  padding: 14px 16px 14px 32px;
+  margin-bottom: 14px;
+  font-size: 14px;
+  color: #1e3a8a;
+  line-height: 1.6;
+}
+
+.found-report-steps li {
+  margin-bottom: 4px;
+}

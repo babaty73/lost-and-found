@@ -6,13 +6,14 @@ import AdminRoute from "./components/AdminRoute";
 import { getAdminUser, clearAdminSession } from "./services/adminAuth";
 
 import Home from "./pages/Home";
-import ReportLost from "./pages/ReportLost";
+import ReportFoundItem from "./pages/ReportFoundItem";
 import FoundedItems from "./pages/FoundedItems";
 import ItemDetail from "./pages/ItemDetail";
 import HowItWorks from "./pages/HowItWorks";
 import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminRegisterFoundItem from "./pages/AdminRegisterFoundItem";
+import AdminPendingFoundReports from "./pages/AdminPendingFoundReports";
 import AdminItemsList from "./pages/AdminItemsList";
 import AdminItemDetail from "./pages/AdminItemDetail";
 
@@ -35,7 +36,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Navigate to="/home" replace />} />
         <Route path="/home" element={<Home />} />
-        <Route path="/report-lost" element={<ReportLost />} />
+        <Route path="/report-found" element={<ReportFoundItem />} />
         <Route path="/found-items" element={<FoundedItems />} />
         <Route path="/items/:id" element={<ItemDetail />} />
         <Route path="/how-it-works" element={<HowItWorks />} />
@@ -54,6 +55,14 @@ function App() {
           element={
             <AdminRoute>
               <AdminRegisterFoundItem />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/pending-found-reports"
+          element={
+            <AdminRoute>
+              <AdminPendingFoundReports />
             </AdminRoute>
           }
         />

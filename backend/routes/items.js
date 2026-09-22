@@ -4,6 +4,9 @@ import {
   getItem,
   createLostItem,
   registerFoundItem,
+  createFoundReport,
+  listPendingFoundReports,
+  acceptFoundHandover,
   getItemAdmin,
   updateItem,
   markUnclaimed,
@@ -36,10 +39,17 @@ const claimLimiter = rateLimit({
 router.get("/", listItems);
 router.get("/:id", getItem);
 router.post("/lost", reportLimiter, createLostItem);
+// A student reporting something they found online — creates a pending
+// report only; see acceptFoundHandover for the separate admin action that
+// actually publishes it. Shares the same abuse-prone-endpoint rationale as
+// /lost above, so it gets the same rate limit.
+router.post("/found-report", reportLimiter, createFoundReport);
 router.post("/:itemId/claims", claimLimiter, createClaim);
 
 // --- Admin only ---
 router.post("/found", verifyToken, isAdmin, registerFoundItem);
+router.get("/found-reports/pending", verifyToken, isAdmin, listPendingFoundReports);
+router.patch("/:id/accept-handover", verifyToken, isAdmin, acceptFoundHandover);
 router.get("/:id/admin", verifyToken, isAdmin, getItemAdmin);
 router.get("/:id/possible-duplicates", verifyToken, isAdmin, findPossibleDuplicates);
 router.get("/:itemId/claims", verifyToken, isAdmin, listClaimsForItem);

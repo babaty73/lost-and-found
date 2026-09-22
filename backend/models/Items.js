@@ -34,15 +34,22 @@ const finderSchema = new mongoose.Schema(
     type: { type: String, enum: ["student", "staff", "unknown"], default: "unknown" },
     studentId: { type: String, trim: true, default: null },
     name: { type: String, trim: true, default: null },
+    // Optional contact info for a student who submits their own found-item
+    // report online (see createFoundReport) — distinct from `intake`, which
+    // describes the Student Union's physical receipt of the item.
+    contact: { type: String, trim: true, default: null },
   },
   { _id: false }
 );
 
 const intakeSchema = new mongoose.Schema(
   {
-    receivedThrough: { type: String, trim: true, default: "Other" },
+    // Left unset (null) until the Student Union has actually, physically
+    // received the item — see acceptFoundHandover. Do not default this to
+    // "now", or an online-only report would misleadingly look received.
+    receivedThrough: { type: String, trim: true, default: null },
     notes: { type: String, trim: true, default: "" },
-    receivedAt: { type: Date, default: Date.now },
+    receivedAt: { type: Date, default: null },
     registeredBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", default: null },
   },
   { _id: false }
@@ -82,12 +89,14 @@ const itemSchema = new mongoose.Schema(
       },
     },
 
-    // Item lifecycle. Deliberately a single, small state set shared by both
-    // lost and found items (see architecture notes for why "returned" and
-    // "resolved" were collapsed into one terminal "resolved" state).
+    // Item lifecycle. "pending_handover" is a found item reported online by
+    // a student that the Student Union has not yet physically received —
+    // it is never publicly visible and can never be claimed (see
+    // itemController.listItems/getItem and claimController.createClaim).
+    // Everything else is unchanged from before.
     status: {
       type: String,
-      enum: ["active", "under_review", "unclaimed", "resolved", "cancelled"],
+      enum: ["pending_handover", "active", "under_review", "unclaimed", "resolved", "cancelled"],
       default: "active",
     },
 
