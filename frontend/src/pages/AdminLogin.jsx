@@ -74,11 +74,6 @@ function AdminLogin({ onLogin }) {
         <Button type="submit" loading={submitting} className="mt-6 w-full">
           {submitting ? "Logging in..." : "Login"}
         </Button>
-
-        <p className="mt-5 text-center text-xs text-slate-500">
-          This login is for ASTU Student Union staff only. Students do not need an
-          account to report or search for items.
-        </p>
       </form>
     </div>
   );
