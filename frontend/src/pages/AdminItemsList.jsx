@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import api from "../services/api";
-import "./AdminDashboard.css";
+import { PageHeader, Card, StatusBadge, EmptyState, LoadingState, ErrorState } from "../components/ui";
 
 // A simple filtered list backing the dashboard's stat-card links
-// (e.g. "Active Lost Reports" -> /admin/items?type=lost&status=active).
+// (e.g. "Active Found Items" -> /admin/items?type=found&status=active).
 // Deliberately plain — the operational review work happens on each item's
 // own AdminItemDetail page, not here.
 function AdminItemsList() {
@@ -33,38 +33,37 @@ function AdminItemsList() {
   const title = [type, status ? status.replace("_", " ") : null].filter(Boolean).join(" · ") || "All items";
 
   return (
-    <div className="admin-container">
-      <Link to="/admin" className="back-link">
+    <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+      <Link to="/admin" className="mb-4 inline-block text-sm font-medium text-primary-600 hover:text-primary-700">
         ← Back to dashboard
       </Link>
-      <h1 style={{ textTransform: "capitalize" }}>{title}</h1>
+      <PageHeader title={title} />
 
-      {error && <p className="form-error">{error}</p>}
+      {error && <ErrorState className="mb-6">{error}</ErrorState>}
 
       {loading ? (
-        <p>Loading...</p>
+        <LoadingState />
       ) : items.length === 0 ? (
-        <div className="admin-empty">
-          <h3>No items match this filter.</h3>
-        </div>
+        <EmptyState title="No items match this filter." />
       ) : (
-        <div className="admin-grid">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {items.map((item) => (
-            <Link to={`/admin/items/${item.id}`} className="admin-card" key={item.id}>
-              <div className="admin-card-header">
-                <h2>{item.title}</h2>
-                <span className="admin-status">{item.status.replace("_", " ")}</span>
+            <Card as={Link} to={`/admin/items/${item.id}`} hoverable key={item.id}>
+              <div className="flex items-start justify-between gap-3">
+                <h2 className="text-sm font-semibold text-slate-900">{item.title}</h2>
+                <StatusBadge status={item.status} />
               </div>
-              <p>
-                <strong>Type:</strong> {item.type}
-              </p>
-              <p>
-                <strong>Location:</strong> {item.location}
-              </p>
-              <p>
-                <strong>Category:</strong> {item.category}
-              </p>
-            </Link>
+              <dl className="mt-3 space-y-1 text-sm text-slate-600">
+                <div>
+                  <dt className="inline font-medium text-slate-700">Location: </dt>
+                  <dd className="inline">{item.location}</dd>
+                </div>
+                <div>
+                  <dt className="inline font-medium text-slate-700">Category: </dt>
+                  <dd className="inline">{item.category}</dd>
+                </div>
+              </dl>
+            </Card>
           ))}
         </div>
       )}

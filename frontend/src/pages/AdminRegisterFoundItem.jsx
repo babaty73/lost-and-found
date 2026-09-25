@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
-import "./ReportLost.css";
+import { Button, Input, Textarea, Select, ErrorState, PageHeader } from "../components/ui";
+import { useToast } from "../components/ui";
 
 const MAX_IMAGE_SIZE = 2 * 1024 * 1024; // 2MB — matches the backend's per-image cap
 const RECEIVED_THROUGH_SUGGESTIONS = [
@@ -20,7 +21,7 @@ const RECEIVED_THROUGH_SUGGESTIONS = [
 // blocks registration (see architecture notes on finder vs. reporter).
 function AdminRegisterFoundItem() {
   const navigate = useNavigate();
-  const [showSuccess, setShowSuccess] = useState(false);
+  const showToast = useToast();
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
@@ -89,8 +90,8 @@ function AdminRegisterFoundItem() {
 
     try {
       const res = await api.post("/items/found", payload);
-      setShowSuccess(true);
-      setTimeout(() => navigate(`/admin/items/${res.data._id}`), 1200);
+      showToast("Item registered.", "success");
+      navigate(`/admin/items/${res.data._id}`);
     } catch (err) {
       const message =
         err.response?.data?.message || "Failed to register this item. Please try again.";
@@ -101,60 +102,53 @@ function AdminRegisterFoundItem() {
   };
 
   return (
-    <div className="report-container">
-      {showSuccess && (
-        <div className="success-overlay">
-          <div className="success-card">
-            <div className="success-icon">✓</div>
-            <h2>Item Registered</h2>
-            <p>Redirecting to the item...</p>
-          </div>
-        </div>
-      )}
+    <div className="mx-auto max-w-2xl px-4 py-10 sm:px-6 lg:px-8">
+      <PageHeader
+        title="Register a Found Item"
+        description="For items physically received at the Student Union Lost & Found office."
+      />
 
-      <div className="report-card" style={{ maxWidth: 560 }}>
-        <h1>Register a Found Item</h1>
-        <p className="report-intro">
-          For items physically received at the Student Union Lost &amp; Found office.
-        </p>
+      <form onSubmit={handleSubmit} className="space-y-5">
+        {error && <ErrorState>{error}</ErrorState>}
 
-        {error && (
-          <p className="form-error" role="alert">
-            {error}
-          </p>
-        )}
+        <Input id="found-title" label="Item title" name="title" value={form.title} onChange={handleChange} required />
 
-        <form onSubmit={handleSubmit} className="report-form">
-          <label htmlFor="found-title">Item title</label>
-          <input id="found-title" type="text" name="title" value={form.title} onChange={handleChange} required />
+        <Textarea
+          id="found-description"
+          label="Description"
+          name="description"
+          value={form.description}
+          onChange={handleChange}
+        />
 
-          <label htmlFor="found-description">Description</label>
-          <textarea
-            id="found-description"
-            name="description"
-            value={form.description}
-            onChange={handleChange}
-            rows={3}
-          />
+        <Select id="found-category" label="Category" name="category" value={form.category} onChange={handleChange} required>
+          <option value="">Select category</option>
+          <option value="ID">ID Card</option>
+          <option value="Electronics">Electronics</option>
+          <option value="Book">Book</option>
+          <option value="Clothing">Clothing</option>
+          <option value="Other">Other</option>
+        </Select>
 
-          <label htmlFor="found-category">Category</label>
-          <select id="found-category" name="category" value={form.category} onChange={handleChange} required>
-            <option value="">Select Category</option>
-            <option value="ID">ID Card</option>
-            <option value="Electronics">Electronics</option>
-            <option value="Book">Book</option>
-            <option value="Clothing">Clothing</option>
-            <option value="Other">Other</option>
-          </select>
+        <Input id="found-location" label="Found location" name="location" value={form.location} onChange={handleChange} required />
 
-          <label htmlFor="found-location">Found location</label>
-          <input id="found-location" type="text" name="location" value={form.location} onChange={handleChange} required />
+        <Input
+          id="found-date"
+          label="Approximate date found"
+          type="date"
+          name="eventDate"
+          value={form.eventDate}
+          onChange={handleChange}
+          required
+        />
 
-          <label htmlFor="found-date">Approximate date found</label>
-          <input id="found-date" type="date" name="eventDate" value={form.eventDate} onChange={handleChange} required />
-
-          <label className="file-label" htmlFor="found-image">
-            Upload a photo (optional)
+        <div>
+          <label className="mb-1.5 block text-sm font-medium text-slate-700">Upload a photo (optional)</label>
+          <label
+            htmlFor="found-image"
+            className="flex cursor-pointer items-center justify-center rounded-lg border-2 border-dashed border-slate-300 px-4 py-6 text-sm text-slate-500 transition hover:border-primary-400 hover:text-primary-600"
+          >
+            {fileName || "Click to choose an image"}
             <input
               id="found-image"
               type="file"
@@ -164,74 +158,82 @@ function AdminRegisterFoundItem() {
               hidden
             />
           </label>
-          {fileName && <p className="file-name">Selected: {fileName}</p>}
-          {form.image && <img src={form.image} alt="Preview of the found item" className="image-preview" />}
+          {form.image && (
+            <img src={form.image} alt="Preview of the found item" className="mt-3 h-40 w-40 rounded-lg object-cover ring-1 ring-slate-200" />
+          )}
+        </div>
 
-          <hr />
-          <p className="field-hint">Finder information (optional — never required to register an item)</p>
+        <div className="border-t border-slate-200 pt-5">
+          <p className="mb-4 text-sm font-medium text-slate-500">
+            Finder information (optional — never required to register an item)
+          </p>
 
-          <label htmlFor="finder-type">Finder</label>
-          <select id="finder-type" name="finderType" value={form.finderType} onChange={handleChange}>
-            <option value="unknown">Unknown / declined to identify</option>
-            <option value="student">Student</option>
-            <option value="staff">Staff member</option>
-          </select>
+          <div className="space-y-5">
+            <Select id="finder-type" label="Finder" name="finderType" value={form.finderType} onChange={handleChange}>
+              <option value="unknown">Unknown / declined to identify</option>
+              <option value="student">Student</option>
+              <option value="staff">Staff member</option>
+            </Select>
 
-          {form.finderType === "student" && (
-            <>
-              <label htmlFor="finder-student-id">Finder's institutional student ID</label>
-              <input
+            {form.finderType === "student" && (
+              <Input
                 id="finder-student-id"
-                type="text"
+                label="Finder's institutional student ID"
                 name="finderStudentId"
                 value={form.finderStudentId}
                 onChange={handleChange}
               />
-            </>
-          )}
+            )}
 
-          {form.finderType === "staff" && (
-            <>
-              <label htmlFor="finder-name">Finder's name or role</label>
-              <input id="finder-name" type="text" name="finderName" value={form.finderName} onChange={handleChange} />
-            </>
-          )}
+            {form.finderType === "staff" && (
+              <Input
+                id="finder-name"
+                label="Finder's name or role"
+                name="finderName"
+                value={form.finderName}
+                onChange={handleChange}
+              />
+            )}
 
-          <label htmlFor="received-through">Received through</label>
-          <select id="received-through" name="receivedThrough" value={form.receivedThrough} onChange={handleChange}>
-            {RECEIVED_THROUGH_SUGGESTIONS.map((option) => (
-              <option key={option} value={option}>
-                {option}
-              </option>
-            ))}
-          </select>
+            <Select
+              id="received-through"
+              label="Received through"
+              name="receivedThrough"
+              value={form.receivedThrough}
+              onChange={handleChange}
+            >
+              {RECEIVED_THROUGH_SUGGESTIONS.map((option) => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
+            </Select>
 
-          <label htmlFor="intake-notes">Intake notes (optional)</label>
-          <textarea
-            id="intake-notes"
-            name="intakeNotes"
-            value={form.intakeNotes}
-            onChange={handleChange}
-            rows={2}
-          />
+            <Textarea
+              id="intake-notes"
+              label="Intake notes (optional)"
+              name="intakeNotes"
+              value={form.intakeNotes}
+              onChange={handleChange}
+              rows={2}
+            />
 
-          <label htmlFor="private-details">
-            Private verification details (never shown publicly)
-          </label>
-          <textarea
-            id="private-details"
-            name="privateDetails"
-            placeholder="e.g. small scratch under left corner, a distinctive sticker"
-            value={form.privateDetails}
-            onChange={handleChange}
-            rows={2}
-          />
+            <Textarea
+              id="private-details"
+              label="Private verification details (never shown publicly)"
+              name="privateDetails"
+              placeholder="e.g. small scratch under left corner, a distinctive sticker"
+              value={form.privateDetails}
+              onChange={handleChange}
+              rows={2}
+            />
+          </div>
+        </div>
 
-          <button type="submit" className="submit-btn" disabled={submitting}>
-            {submitting ? "Registering..." : "Register Item"}
-          </button>
-        </form>
-      </div>
+        <Button type="submit" size="lg" loading={submitting} className="w-full sm:w-auto">
+          {submitting ? "Registering..." : "Register Item"}
+        </Button>
+      </form>
     </div>
   );
 }

@@ -1,14 +1,13 @@
 import { useEffect, useState, useCallback } from "react";
 import api from "../services/api";
 import ItemCard from "../components/ItemCard";
-import "./FoundedItems.css";
+import { PageHeader, Button, EmptyState, LoadingState, ErrorState } from "../components/ui";
 
 const PAGE_SIZE = 12;
 
 // Public browse/search page for found items. Filtering and pagination are
 // done server-side (see backend/controllers/itemController.js listItems) —
-// this page no longer fetches the entire collection and filters in the
-// browser the way the prototype did.
+// this page fetches only one page at a time rather than the whole collection.
 function FoundedItems() {
   const [search, setSearch] = useState("");
   const [locationFilter, setLocationFilter] = useState("");
@@ -67,98 +66,110 @@ function FoundedItems() {
     setSortOrder("newest");
   };
 
+  const hasFilters = search || locationFilter || categoryFilter || sortOrder !== "newest";
+  const inputClasses =
+    "block w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 shadow-sm transition placeholder:text-slate-400 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500";
+
   return (
-    <div className="founded-container">
-      <h1>Browse Found Items</h1>
-      <p className="founded-intro">
-        Items below have been brought to and registered by the ASTU Student Union
-        Lost &amp; Found office. If one looks like yours, open it and submit a claim.
-      </p>
+    <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+      <PageHeader
+        title="Browse Found Items"
+        description="Items below have been brought to and registered by the ASTU Student Union Lost & Found office. If one looks like yours, open it and submit a claim."
+      />
 
-      <div className="filters-container">
-        <label className="visually-hidden" htmlFor="search-input">
-          Search by name
-        </label>
-        <input
-          id="search-input"
-          type="text"
-          placeholder="Search by name..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
+      <div className="mb-8 grid gap-3 rounded-xl border border-slate-200 bg-white p-4 shadow-card sm:grid-cols-2 lg:grid-cols-5">
+        <div className="lg:col-span-2">
+          <label className="sr-only" htmlFor="search-input">
+            Search by name
+          </label>
+          <input
+            id="search-input"
+            type="text"
+            placeholder="Search by name..."
+            className={inputClasses}
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
 
-        <label className="visually-hidden" htmlFor="location-input">
-          Filter by location
-        </label>
-        <input
-          id="location-input"
-          type="text"
-          placeholder="Filter by location..."
-          value={locationFilter}
-          onChange={(e) => setLocationFilter(e.target.value)}
-        />
+        <div>
+          <label className="sr-only" htmlFor="location-input">
+            Filter by location
+          </label>
+          <input
+            id="location-input"
+            type="text"
+            placeholder="Location..."
+            className={inputClasses}
+            value={locationFilter}
+            onChange={(e) => setLocationFilter(e.target.value)}
+          />
+        </div>
 
-        <label className="visually-hidden" htmlFor="category-select">
-          Filter by category
-        </label>
-        <select
-          id="category-select"
-          value={categoryFilter}
-          onChange={(e) => setCategoryFilter(e.target.value)}
-        >
-          <option value="">All Categories</option>
-          <option value="ID">ID Card</option>
-          <option value="Electronics">Electronics</option>
-          <option value="Book">Book</option>
-          <option value="Clothing">Clothing</option>
-          <option value="Other">Other</option>
-        </select>
+        <div>
+          <label className="sr-only" htmlFor="category-select">
+            Filter by category
+          </label>
+          <select
+            id="category-select"
+            className={inputClasses}
+            value={categoryFilter}
+            onChange={(e) => setCategoryFilter(e.target.value)}
+          >
+            <option value="">All categories</option>
+            <option value="ID">ID Card</option>
+            <option value="Electronics">Electronics</option>
+            <option value="Book">Book</option>
+            <option value="Clothing">Clothing</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
 
-        <label className="visually-hidden" htmlFor="sort-select">
-          Sort order
-        </label>
-        <select id="sort-select" value={sortOrder} onChange={(e) => setSortOrder(e.target.value)}>
-          <option value="newest">Newest First</option>
-          <option value="oldest">Oldest First</option>
-        </select>
-
-        <button className="clear-btn" onClick={clearFilters}>
-          Clear Filters
-        </button>
+        <div className="flex gap-2">
+          <div className="flex-1">
+            <label className="sr-only" htmlFor="sort-select">
+              Sort order
+            </label>
+            <select
+              id="sort-select"
+              className={inputClasses}
+              value={sortOrder}
+              onChange={(e) => setSortOrder(e.target.value)}
+            >
+              <option value="newest">Newest first</option>
+              <option value="oldest">Oldest first</option>
+            </select>
+          </div>
+          {hasFilters && (
+            <Button variant="ghost" onClick={clearFilters} className="flex-shrink-0">
+              Clear
+            </Button>
+          )}
+        </div>
       </div>
 
-      {error && (
-        <p className="form-error" role="alert">
-          {error}
-        </p>
-      )}
+      {error && <ErrorState className="mb-6">{error}</ErrorState>}
 
       {loading && items.length === 0 ? (
-        <div className="empty-state">
-          <h3>Loading items...</h3>
-        </div>
+        <LoadingState label="Loading found items..." />
       ) : items.length === 0 ? (
-        <div className="empty-state">
-          <h3>No matching items found</h3>
-          <p>Try adjusting your filters.</p>
-        </div>
+        <EmptyState
+          title="No matching items found"
+          description="Try adjusting your filters, or check back later — new items are added as the Student Union receives them."
+        />
       ) : (
         <>
-          <div className="items-grid">
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {items.map((item) => (
               <ItemCard key={item.id} item={item} />
             ))}
           </div>
 
           {page < totalPages && (
-            <div className="load-more-container">
-              <button
-                className="clear-btn"
-                onClick={() => fetchItems(page + 1, true)}
-                disabled={loading}
-              >
-                {loading ? "Loading..." : "Load more"}
-              </button>
+            <div className="mt-8 flex justify-center">
+              <Button variant="secondary" onClick={() => fetchItems(page + 1, true)} loading={loading}>
+                Load more
+              </Button>
             </div>
           )}
         </>

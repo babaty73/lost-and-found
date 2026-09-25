@@ -1,83 +1,60 @@
-# ASTU Digital Lost & Found
+# ASTU Lost & Found
 
-A campus-based lost and found web application built with **React** and **Vite**, helping students report, track, and retrieve lost items easily.  
-Now includes **user authentication, dashboards, and separate pages for reporting lost and found items**.
+A web application for the ASTU Student Union Lost & Found office: students report items
+they've found, the Student Union physically receives and verifies them, and other
+students can search and submit claims. Built with **React**, **Vite**, and **Tailwind
+CSS**.
+
+There is no lost-item report and no student accounts — see "How it works" below.
 
 ---
 
 ## 🚀 Features
 
-- **User Authentication**: Login and register with protected routes.  
-- **Report Lost Items**: Submit lost items with name, location, date, and optional image.  
-- **Report Found Items**: Submit found items with name, location, date, and image.  
-- **View Submitted Items**: All reported items displayed on the dashboard for quick access.  
-- **Dashboard Overview**: Shows statistics for lost and found items.  
-- **Search Functionality**: Search items by name or category directly from the dashboard.  
-- **Responsive UI**: Works seamlessly on mobile, tablet, and desktop.  
-- **Interactive Navbar**: Hamburger menu for mobile, fully responsive and collapsible.  
+- **Report Found Item**: Students report something they found online — no account
+  needed. This only creates a private, pending record.
+- **Physical handover, then publication**: A report only becomes a public listing once
+  a Student Union admin confirms the physical item has actually been received.
+- **Browse & search found items**: Server-side filtering and pagination.
+- **Claims**: Any number of students can submit a claim on the same item (self, or on
+  behalf of someone else); the same student can't submit two claims on one item.
+- **Admin dashboard**: Real operational counts, a pending-reports intake queue, claim
+  review (verify/reject), and recording a physical return.
+- **Responsive, accessible UI**: Built with Tailwind CSS and a small set of shared
+  components (buttons, inputs, status badges, empty/loading/error states, modals,
+  toasts) rather than page-by-page custom CSS.
 
----
+## 🔑 How it works
 
-## 📸 Screenshots
+1. A student reports something they found online.
+2. They bring the physical item to the ASTU Student Union Lost & Found office.
+3. An admin accepts the handover, which publishes the item.
+4. Another student searches, recognizes it, and submits a claim.
+5. The Student Union reviews all claims, verifies identity in person, and records the
+   return.
 
-### 🏠 Home Page
-![home](screenshots/home.jpg)
+## 🛠️ Technologies used
 
-### 📝 Sidebar (Mobile Version)
-![sidebar](screenshots/navbar.jpg)
+- ⚛️ **React** – component-based UI
+- ⚡ **Vite** – dev server and build tool
+- 🎨 **Tailwind CSS** – utility-first styling (see `tailwind.config.js`)
+- **Axios** – API client
 
-### 🔑 Login Page
-![login](screenshots/login.jpg)
-
-### ✍️ Report Lost Item Page
-![reportlostitem](screenshots/reportlost.jpg)
-
-### 📝 Founded Items Page
-![founded](screenshots/Founded.jpg)
-
-### 📊 Dashboard
-![dashboard](screenshots/dashboard.jpg)
-
----
-
-## 🛠️ Technologies Used
-
-- ⚛️ **React** – Component-based UI library  
-- ⚡ **Vite** – Fast development server and build tool  
-- 🎨 **CSS** – Responsive layout and styling  
-
----
-
-## 🌟 Future Improvements
-
-- **Admin Approval for Items**: Admin review for newly reported lost/found items.  
-- **User Profile Management**: Users can edit account info and track their submissions.  
-- **Notifications / Alerts**: Inform users when items are retrieved or claimed.  
-
----
-
-## 💻 Installation & Usage
-
-1. **Clone the repository**:
+## 💻 Installation & usage
 
 ```bash
 git clone https://github.com/babaty73/lost-and-found.git
-
-
-2 Navigate to the project directory:
-
-cd lost-and-found
-
-
-3 Install dependencies:
-
+cd lost-and-found/frontend
 npm install
-
-
-4 Start the development server:
-
+cp .env.example .env   # set VITE_API_URL to your backend
 npm run dev
+```
 
+Visit `http://localhost:5173` (or the port shown in the terminal). The backend must be
+running separately — see `../backend/README` / `.env.example` there.
 
-Open in browser:
-Visit http://localhost:5173 (or the port shown in terminal).
+## 🌟 Possible future improvements
+
+- Retention policy for unclaimed items (an institutional decision, not a technical one)
+- Email/notification when a claim is verified or an item is registered
+- A real ASTU institutional identity API integration (see `backend/services/identityProvider.js`)

@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import api from "../services/api";
-import "./AdminDashboard.css";
+import { PageHeader, Button, Card, StatusBadge, EmptyState, LoadingState } from "../components/ui";
 
 // Real operational stats, pulled from the backend — replacing the old
 // prototype's "Retrieved Items" counter, which read a `retrieved` field
-// nothing ever set and therefore always showed zero.
+// nothing ever set and therefore always showed zero. There is no
+// lost-report statistic here: found-item reporting is the only student
+// workflow this application supports.
 function useCount(params) {
   const [count, setCount] = useState(null);
   useEffect(() => {
@@ -29,20 +31,19 @@ function useCount(params) {
   return count;
 }
 
-function StatCard({ label, count, to }) {
+function StatCard({ label, count, to, highlight }) {
   const content = (
-    <div className="admin-stat-card">
-      <h2>{count === null ? "…" : count}</h2>
-      <p>{label}</p>
-    </div>
+    <Card hoverable={Boolean(to)} className={highlight ? "!border-primary-200 !bg-primary-50/50" : ""}>
+      <p className="text-3xl font-bold text-slate-900">{count === null ? "…" : count}</p>
+      <p className="mt-1 text-sm text-slate-500">{label}</p>
+    </Card>
   );
   return to ? <Link to={to}>{content}</Link> : content;
 }
 
 function AdminDashboard() {
-  const activeLost = useCount({ type: "lost", status: "active" });
-  const activeFound = useCount({ type: "found", status: "active" });
   const pendingHandover = useCount({ __endpoint: "/items/found-reports/pending" });
+  const activeFound = useCount({ type: "found", status: "active" });
   const underReview = useCount({ type: "found", status: "under_review" });
   const unclaimed = useCount({ type: "found", status: "unclaimed" });
   const resolved = useCount({ status: "resolved" });
@@ -60,21 +61,18 @@ function AdminDashboard() {
   }, []);
 
   return (
-    <div className="admin-container">
-      <div className="admin-header-row">
-        <h1>Student Union Admin Dashboard</h1>
-        <Link to="/admin/register-found" className="admin-primary-btn">
-          + Register a Found Item
-        </Link>
-      </div>
+    <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+      <PageHeader
+        title="Student Union Admin Dashboard"
+        actions={
+          <Button as={Link} to="/admin/register-found">
+            + Register a Found Item
+          </Button>
+        }
+      />
 
-      <div className="admin-stats-grid">
-        <StatCard
-          label="Pending Found Reports"
-          count={pendingHandover}
-          to="/admin/pending-found-reports"
-        />
-        <StatCard label="Active Lost Reports" count={activeLost} to="/admin/items?type=lost&status=active" />
+      <div className="mb-10 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+        <StatCard label="Pending Found Reports" count={pendingHandover} to="/admin/pending-found-reports" highlight />
         <StatCard label="Active Found Items" count={activeFound} to="/admin/items?type=found&status=active" />
         <StatCard label="Items Under Review" count={underReview} to="/admin/items?type=found&status=under_review" />
         <StatCard label="Pending Claims" count={pendingClaims} />
@@ -83,31 +81,35 @@ function AdminDashboard() {
         <StatCard label="Resolved Items" count={resolved} to="/admin/items?status=resolved" />
       </div>
 
-      <h2 className="admin-section-title">Items with claims awaiting review</h2>
+      <h2 className="mb-4 text-lg font-semibold text-slate-900">Items with claims awaiting review</h2>
 
       {loadingQueue ? (
-        <p>Loading...</p>
+        <LoadingState />
       ) : underReviewItems.length === 0 ? (
-        <div className="admin-empty">
-          <h3>Nothing awaiting review</h3>
-          <p>Once a claim is submitted on a found item, it will appear here.</p>
-        </div>
+        <EmptyState
+          title="Nothing awaiting review"
+          description="Once a claim is submitted on a found item, it will appear here."
+        />
       ) : (
-        <div className="admin-grid">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {underReviewItems.map((item) => (
-            <Link to={`/admin/items/${item.id}`} className="admin-card" key={item.id}>
-              <div className="admin-card-header">
-                <h2>{item.title}</h2>
-                <span className="admin-status">{item.status.replace("_", " ")}</span>
+            <Card as={Link} to={`/admin/items/${item.id}`} hoverable key={item.id}>
+              <div className="flex items-start justify-between gap-3">
+                <h3 className="text-sm font-semibold text-slate-900">{item.title}</h3>
+                <StatusBadge status={item.status} />
               </div>
-              <p>
-                <strong>Location:</strong> {item.location}
-              </p>
-              <p>
-                <strong>Category:</strong> {item.category}
-              </p>
-              <p className="admin-note">Open to review claims and take action.</p>
-            </Link>
+              <dl className="mt-3 space-y-1 text-sm text-slate-600">
+                <div>
+                  <dt className="inline font-medium text-slate-700">Location: </dt>
+                  <dd className="inline">{item.location}</dd>
+                </div>
+                <div>
+                  <dt className="inline font-medium text-slate-700">Category: </dt>
+                  <dd className="inline">{item.category}</dd>
+                </div>
+              </dl>
+              <p className="mt-3 text-xs font-medium text-primary-600">Open to review claims →</p>
+            </Card>
           ))}
         </div>
       )}

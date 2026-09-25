@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import api from "../services/api";
-import "./AdminDashboard.css";
+import { PageHeader, Card, StatusBadge, EmptyState, LoadingState, ErrorState } from "../components/ui";
 
 // The Student Union's intake queue: online found-item reports waiting on
 // the physical item to actually arrive. Nothing here is publicly visible —
@@ -23,45 +23,48 @@ function AdminPendingFoundReports() {
   }, []);
 
   return (
-    <div className="admin-container">
-      <Link to="/admin" className="back-link">
+    <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+      <Link to="/admin" className="mb-4 inline-block text-sm font-medium text-primary-600 hover:text-primary-700">
         ← Back to dashboard
       </Link>
-      <h1>Pending Found Item Reports</h1>
-      <p className="report-intro" style={{ textAlign: "left", margin: "0 0 20px" }}>
-        Students submitted these online, saying they found something and intend to
-        bring it in. None of these are public yet — open one once the physical item
-        actually arrives at the office to accept it and publish the listing.
-      </p>
+      <PageHeader
+        title="Pending Found Item Reports"
+        description="Students submitted these online, saying they found something and intend to bring it in. None of these are public yet — open one once the physical item actually arrives at the office to accept it and publish the listing."
+      />
 
-      {error && <p className="form-error">{error}</p>}
+      {error && <ErrorState className="mb-6">{error}</ErrorState>}
 
       {loading ? (
-        <p>Loading...</p>
+        <LoadingState />
       ) : reports.length === 0 ? (
-        <div className="admin-empty">
-          <h3>Nothing pending</h3>
-          <p>Online found-item reports waiting on physical handover will appear here.</p>
-        </div>
+        <EmptyState
+          title="Nothing pending"
+          description="Online found-item reports waiting on physical handover will appear here."
+        />
       ) : (
-        <div className="admin-grid">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {reports.map((report) => (
-            <Link to={`/admin/items/${report._id}`} className="admin-card" key={report._id}>
-              <div className="admin-card-header">
-                <h2>{report.title}</h2>
-                <span className="admin-status">pending handover</span>
+            <Card as={Link} to={`/admin/items/${report._id}`} hoverable key={report._id}>
+              <div className="flex items-start justify-between gap-3">
+                <h2 className="text-sm font-semibold text-slate-900">{report.title}</h2>
+                <StatusBadge status="pending_handover" />
               </div>
-              <p>
-                <strong>Reported found at:</strong> {report.location}
-              </p>
-              <p>
-                <strong>Category:</strong> {report.category}
-              </p>
-              <p>
-                <strong>Submitted:</strong> {new Date(report.createdAt).toLocaleString()}
-              </p>
-              <p className="admin-note">Open to review and accept physical handover.</p>
-            </Link>
+              <dl className="mt-3 space-y-1 text-sm text-slate-600">
+                <div>
+                  <dt className="inline font-medium text-slate-700">Found at: </dt>
+                  <dd className="inline">{report.location}</dd>
+                </div>
+                <div>
+                  <dt className="inline font-medium text-slate-700">Category: </dt>
+                  <dd className="inline">{report.category}</dd>
+                </div>
+                <div>
+                  <dt className="inline font-medium text-slate-700">Submitted: </dt>
+                  <dd className="inline">{new Date(report.createdAt).toLocaleString()}</dd>
+                </div>
+              </dl>
+              <p className="mt-3 text-xs font-medium text-primary-600">Open to review and accept handover →</p>
+            </Card>
           ))}
         </div>
       )}

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 import { saveAdminSession } from "../services/adminAuth";
-import "./AdminLogin.css";
+import { Button, Input, ErrorState } from "../components/ui";
 
 // This is the ONLY login in the application. Students never see a login
 // screen at all — see the architecture notes for why. This page exists
@@ -38,41 +38,47 @@ function AdminLogin({ onLogin }) {
   };
 
   return (
-    <div className="auth-container">
-      <form className="auth-card" onSubmit={handleSubmit}>
-        <h2>Admin Login</h2>
+    <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center bg-slate-50 px-4 py-12">
+      <form
+        className="w-full max-w-sm rounded-2xl border border-slate-200 bg-white p-8 shadow-card"
+        onSubmit={handleSubmit}
+      >
+        <h1 className="text-center text-xl font-bold text-slate-900">Student Union Admin Login</h1>
 
-        {error && (
-          <p className="auth-error" role="alert">
-            {error}
-          </p>
-        )}
+        {error && <ErrorState className="mt-5">{error}</ErrorState>}
 
-        <label htmlFor="admin-email">Email</label>
-        <input
-          id="admin-email"
-          type="email"
-          name="email"
-          autoComplete="username"
-          value={form.email}
-          onChange={handleChange}
-          required
-        />
+        <div className="mt-6 space-y-4">
+          <Input
+            id="admin-email"
+            label="Email"
+            type="email"
+            name="email"
+            autoComplete="username"
+            value={form.email}
+            onChange={handleChange}
+            required
+          />
 
-        <label htmlFor="admin-password">Password</label>
-        <input
-          id="admin-password"
-          type="password"
-          name="password"
-          autoComplete="current-password"
-          value={form.password}
-          onChange={handleChange}
-          required
-        />
+          <Input
+            id="admin-password"
+            label="Password"
+            type="password"
+            name="password"
+            autoComplete="current-password"
+            value={form.password}
+            onChange={handleChange}
+            required
+          />
+        </div>
 
-        <button type="submit" disabled={submitting}>
+        <Button type="submit" loading={submitting} className="mt-6 w-full">
           {submitting ? "Logging in..." : "Login"}
-        </button>
+        </Button>
+
+        <p className="mt-5 text-center text-xs text-slate-500">
+          This login is for ASTU Student Union staff only. Students do not need an
+          account to report or search for items.
+        </p>
       </form>
     </div>
   );

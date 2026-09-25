@@ -1,68 +1,78 @@
 import { useEffect, useState, useCallback } from "react";
 import { useParams, Link } from "react-router-dom";
 import api from "../services/api";
-import "./AdminItemDetail.css";
+import { Button, Card, StatusBadge, ErrorState, LoadingState, Modal, useToast } from "../components/ui";
 
-const CLAIM_STATUS_LABELS = {
-  pending: "Pending",
-  verified: "Verified",
-  rejected: "Rejected",
-  cancelled: "Cancelled",
-};
+function InfoRow({ label, value }) {
+  if (value === undefined || value === null || value === "") return null;
+  return (
+    <div className="flex justify-between gap-4 py-1.5 text-sm">
+      <dt className="text-slate-500">{label}</dt>
+      <dd className="text-right font-medium text-slate-900">{value}</dd>
+    </div>
+  );
+}
 
 function ClaimRow({ claim, onReview, onRecordReturn, itemType, itemStatus }) {
   const [note, setNote] = useState("");
   const [busy, setBusy] = useState(false);
+  const [confirmAction, setConfirmAction] = useState(null); // "reject" | "return" | null
 
   const run = async (action) => {
     setBusy(true);
     await onReview(claim._id, action, note);
     setBusy(false);
     setNote("");
+    setConfirmAction(null);
+  };
+
+  const runReturn = async () => {
+    setBusy(true);
+    await onRecordReturn(claim._id, note);
+    setBusy(false);
+    setConfirmAction(null);
   };
 
   return (
-    <div className="claim-row">
-      <div className="claim-row-header">
-        <strong>{claim.claimType === "on_behalf" ? "On behalf of another student" : "Self claim"}</strong>
-        <span className={`claim-status claim-status-${claim.status}`}>
-          {CLAIM_STATUS_LABELS[claim.status] || claim.status}
-        </span>
+    <Card className="!p-5">
+      <div className="flex items-start justify-between gap-3">
+        <p className="text-sm font-semibold text-slate-900">
+          {claim.claimType === "on_behalf" ? "On behalf of another student" : "Self claim"}
+        </p>
+        <StatusBadge status={claim.status} />
       </div>
 
-      <p>
-        <strong>Claimant student ID:</strong> {claim.claimantStudentId}
-      </p>
-      {claim.claimantContact && (
+      <dl className="mt-3 divide-y divide-slate-100 text-sm">
+        <InfoRow label="Claimant student ID" value={claim.claimantStudentId} />
+        <InfoRow label="Claimant contact" value={claim.claimantContact} />
+        {claim.claimType === "on_behalf" && <InfoRow label="Intended owner student ID" value={claim.ownerStudentId} />}
+      </dl>
+
+      <div className="mt-3 space-y-2 text-sm">
         <p>
-          <strong>Claimant contact:</strong> {claim.claimantContact}
+          <span className="font-medium text-slate-700">Why they believe it's theirs: </span>
+          <span className="text-slate-600">{claim.explanation}</span>
         </p>
-      )}
-      {claim.claimType === "on_behalf" && (
-        <p>
-          <strong>Intended owner student ID:</strong> {claim.ownerStudentId}
-        </p>
-      )}
-      <p>
-        <strong>Why they believe it's theirs:</strong> {claim.explanation}
-      </p>
-      {claim.evidence && (
-        <p>
-          <strong>Identifying details provided:</strong> {claim.evidence}
-        </p>
-      )}
-      <p className="claim-meta">Submitted {new Date(claim.createdAt).toLocaleString()}</p>
+        {claim.evidence && (
+          <p>
+            <span className="font-medium text-slate-700">Identifying details provided: </span>
+            <span className="text-slate-600">{claim.evidence}</span>
+          </p>
+        )}
+      </div>
+
+      <p className="mt-3 text-xs text-slate-400">Submitted {new Date(claim.createdAt).toLocaleString()}</p>
 
       {claim.status !== "pending" && claim.review?.reviewedAt && (
-        <p className="claim-meta">
+        <p className="mt-1 text-xs text-slate-400">
           Reviewed {new Date(claim.review.reviewedAt).toLocaleString()}
           {claim.review.note ? ` — "${claim.review.note}"` : ""}
         </p>
       )}
 
       {claim.status === "pending" && (
-        <div className="claim-actions">
-          <label className="visually-hidden" htmlFor={`note-${claim._id}`}>
+        <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-slate-100 pt-4">
+          <label className="sr-only" htmlFor={`note-${claim._id}`}>
             Admin note
           </label>
           <input
@@ -71,29 +81,51 @@ function ClaimRow({ claim, onReview, onRecordReturn, itemType, itemStatus }) {
             placeholder="Optional note"
             value={note}
             onChange={(e) => setNote(e.target.value)}
+            className="min-w-[160px] flex-1 rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
           />
-          <button disabled={busy} onClick={() => run("verify")} className="admin-verify-btn">
+          <Button size="sm" disabled={busy} onClick={() => run("verify")}>
             Verify
-          </button>
-          <button disabled={busy} onClick={() => run("reject")} className="admin-reject-btn">
+          </Button>
+          <Button size="sm" variant="destructive" disabled={busy} onClick={() => setConfirmAction("reject")}>
             Reject
-          </button>
+          </Button>
         </div>
       )}
 
       {claim.status === "verified" && itemType === "found" && itemStatus !== "resolved" && (
-        <div className="claim-actions">
-          <button disabled={busy} onClick={() => onRecordReturn(claim._id, note)} className="admin-verify-btn">
+        <div className="mt-4 border-t border-slate-100 pt-4">
+          <Button size="sm" disabled={busy} onClick={() => setConfirmAction("return")}>
             Record Return (item collected)
-          </button>
+          </Button>
         </div>
       )}
-    </div>
+
+      <Modal
+        open={confirmAction === "reject"}
+        title="Reject this claim?"
+        description="The claim stays in this item's history as rejected — it is not deleted. The item remains open for any other legitimate claim."
+        confirmLabel="Reject Claim"
+        variant="destructive"
+        loading={busy}
+        onConfirm={() => run("reject")}
+        onClose={() => setConfirmAction(null)}
+      />
+      <Modal
+        open={confirmAction === "return"}
+        title="Record this item as returned?"
+        description="Only do this after physically verifying the claimant's institutional student ID at the Student Union office. This will mark the item resolved."
+        confirmLabel="Confirm Return"
+        loading={busy}
+        onConfirm={runReturn}
+        onClose={() => setConfirmAction(null)}
+      />
+    </Card>
   );
 }
 
 function AdminItemDetail() {
   const { id } = useParams();
+  const showToast = useToast();
   const [item, setItem] = useState(null);
   const [claims, setClaims] = useState([]);
   const [auditLogs, setAuditLogs] = useState([]);
@@ -101,6 +133,8 @@ function AdminItemDetail() {
   const [error, setError] = useState("");
   const [actionError, setActionError] = useState("");
   const [duplicates, setDuplicates] = useState(null);
+  const [confirmHandover, setConfirmHandover] = useState(false);
+  const [acceptingHandover, setAcceptingHandover] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -129,9 +163,12 @@ function AdminItemDetail() {
     setActionError("");
     try {
       await api.patch(`/claims/${claimId}/review`, { action, note });
+      showToast(action === "verify" ? "Claim verified." : "Claim rejected.", "success");
       await load();
     } catch (err) {
-      setActionError(err.response?.data?.message || "Failed to update this claim.");
+      const message = err.response?.data?.message || "Failed to update this claim.";
+      setActionError(message);
+      showToast(message, "error");
     }
   };
 
@@ -139,9 +176,12 @@ function AdminItemDetail() {
     setActionError("");
     try {
       await api.post(`/items/${id}/return`, { claimId, note });
+      showToast("Return recorded — item marked resolved.", "success");
       await load();
     } catch (err) {
-      setActionError(err.response?.data?.message || "Failed to record the return.");
+      const message = err.response?.data?.message || "Failed to record the return.";
+      setActionError(message);
+      showToast(message, "error");
     }
   };
 
@@ -149,6 +189,7 @@ function AdminItemDetail() {
     setActionError("");
     try {
       await api.patch(`/items/${id}/unclaimed`);
+      showToast("Item marked unclaimed.", "success");
       await load();
     } catch (err) {
       setActionError(err.response?.data?.message || "Failed to mark this item unclaimed.");
@@ -157,21 +198,16 @@ function AdminItemDetail() {
 
   const handleAcceptHandover = async () => {
     setActionError("");
+    setAcceptingHandover(true);
     try {
       await api.patch(`/items/${id}/accept-handover`, { receivedThrough: "Student Union" });
+      showToast("Handover accepted — item is now public.", "success");
+      setConfirmHandover(false);
       await load();
     } catch (err) {
       setActionError(err.response?.data?.message || "Failed to accept this handover.");
-    }
-  };
-
-  const handleResolveLost = async () => {
-    setActionError("");
-    try {
-      await api.patch(`/items/${id}/resolve`, { method: "self-reported" });
-      await load();
-    } catch (err) {
-      setActionError(err.response?.data?.message || "Failed to resolve this report.");
+    } finally {
+      setAcceptingHandover(false);
     }
   };
 
@@ -184,12 +220,20 @@ function AdminItemDetail() {
     }
   };
 
-  if (loading) return <div className="admin-container">Loading...</div>;
+  if (loading) {
+    return (
+      <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
+        <LoadingState />
+      </div>
+    );
+  }
   if (error || !item) {
     return (
-      <div className="admin-container">
-        <p className="form-error">{error || "Item not found."}</p>
-        <Link to="/admin">Back to dashboard</Link>
+      <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
+        <ErrorState>{error || "Item not found."}</ErrorState>
+        <Link to="/admin" className="mt-4 inline-block text-sm font-medium text-primary-600 hover:text-primary-700">
+          ← Back to dashboard
+        </Link>
       </div>
     );
   }
@@ -197,174 +241,129 @@ function AdminItemDetail() {
   const hasActiveClaim = claims.some((c) => ["pending", "verified"].includes(c.status));
 
   return (
-    <div className="admin-container">
-      <Link to="/admin" className="back-link">
+    <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
+      <Link to="/admin" className="mb-4 inline-block text-sm font-medium text-primary-600 hover:text-primary-700">
         ← Back to dashboard
       </Link>
 
-      <div className="admin-item-detail-card">
-        <div className="admin-item-detail-header">
-          <h1>{item.title}</h1>
-          <span className={`item-status item-status-${item.status}`}>{item.status.replace("_", " ")}</span>
+      <Card>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <h1 className="text-xl font-bold text-slate-900">{item.title}</h1>
+          <StatusBadge status={item.status} />
         </div>
 
-        {actionError && (
-          <p className="form-error" role="alert">
-            {actionError}
-          </p>
-        )}
+        {actionError && <ErrorState className="mt-4">{actionError}</ErrorState>}
 
         {item.status === "pending_handover" && (
-          <p className="pending-handover-banner">
+          <div className="mt-4 rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
             This is an online report only — the Student Union has not received the
             physical item yet. It is not publicly visible and cannot be claimed until
             you accept the handover below.
-          </p>
+          </div>
         )}
 
-        <div className="admin-item-detail-grid">
+        <div className="mt-6 grid grid-cols-1 gap-8 sm:grid-cols-2">
           <div>
-            <h2>Item information</h2>
-            <p>
-              <strong>Type:</strong> {item.type}
-            </p>
-            <p>
-              <strong>Category:</strong> {item.category}
-            </p>
-            <p>
-              <strong>Location:</strong> {item.location}
-            </p>
-            <p>
-              <strong>Date:</strong> {new Date(item.eventDate).toLocaleDateString()}
-            </p>
+            <h2 className="text-sm font-semibold text-slate-900">Item information</h2>
+            <dl className="mt-2 divide-y divide-slate-100">
+              <InfoRow label="Type" value={item.type} />
+              <InfoRow label="Category" value={item.category} />
+              <InfoRow label="Location" value={item.location} />
+              <InfoRow label="Date" value={new Date(item.eventDate).toLocaleDateString()} />
+            </dl>
             {item.description && (
-              <p>
-                <strong>Description:</strong> {item.description}
+              <p className="mt-3 text-sm text-slate-600">
+                <span className="font-medium text-slate-700">Description: </span>
+                {item.description}
               </p>
             )}
             {item.privateDetails && (
-              <p>
-                <strong>Private verification details:</strong> {item.privateDetails}
+              <p className="mt-2 text-sm text-slate-600">
+                <span className="font-medium text-slate-700">Private verification details: </span>
+                {item.privateDetails}
               </p>
             )}
             {item.images?.length > 0 && (
-              <div className="admin-item-images">
+              <div className="mt-3 flex flex-wrap gap-2">
                 {item.images.map((src, i) => (
-                  <img key={i} src={src} alt={`${item.title} ${i + 1}`} />
+                  <img key={i} src={src} alt={`${item.title} ${i + 1}`} className="h-24 w-24 rounded-lg object-cover ring-1 ring-slate-200" />
                 ))}
               </div>
             )}
           </div>
 
           <div>
-            {item.type === "found" ? (
-              <>
-                <h2>Finder / intake information</h2>
-                <p>
-                  <strong>Finder type:</strong> {item.finder?.type || "unknown"}
-                </p>
-                {item.finder?.studentId && (
-                  <p>
-                    <strong>Finder student ID:</strong> {item.finder.studentId}
-                  </p>
-                )}
-                {item.finder?.name && (
-                  <p>
-                    <strong>Finder name:</strong> {item.finder.name}
-                  </p>
-                )}
-                <p>
-                  <strong>Received through:</strong> {item.intake?.receivedThrough}
-                </p>
-                {item.intake?.notes && (
-                  <p>
-                    <strong>Intake notes:</strong> {item.intake.notes}
-                  </p>
-                )}
-                <p>
-                  <strong>Received:</strong>{" "}
-                  {item.intake?.receivedAt ? new Date(item.intake.receivedAt).toLocaleString() : "—"}
-                </p>
-              </>
-            ) : (
-              <>
-                <h2>Reporter information</h2>
-                <p>
-                  <strong>Reporter student ID:</strong> {item.reporterStudentId}
-                </p>
-                {item.reporterContact && (
-                  <p>
-                    <strong>Contact:</strong> {item.reporterContact}
-                  </p>
-                )}
-              </>
-            )}
+            <h2 className="text-sm font-semibold text-slate-900">Finder / intake information</h2>
+            <dl className="mt-2 divide-y divide-slate-100">
+              <InfoRow label="Finder type" value={item.finder?.type || "unknown"} />
+              <InfoRow label="Finder student ID" value={item.finder?.studentId} />
+              <InfoRow label="Finder name" value={item.finder?.name} />
+              <InfoRow label="Received through" value={item.intake?.receivedThrough} />
+              <InfoRow label="Intake notes" value={item.intake?.notes} />
+              <InfoRow
+                label="Received"
+                value={item.intake?.receivedAt ? new Date(item.intake.receivedAt).toLocaleString() : null}
+              />
+            </dl>
 
             {item.resolution?.resolvedAt && (
               <>
-                <h2>Resolution</h2>
-                <p>
-                  <strong>Method:</strong> {item.resolution.method}
-                </p>
-                <p>
-                  <strong>Resolved:</strong> {new Date(item.resolution.resolvedAt).toLocaleString()}
-                </p>
-                {item.resolution.note && (
-                  <p>
-                    <strong>Note:</strong> {item.resolution.note}
-                  </p>
-                )}
+                <h2 className="mt-5 text-sm font-semibold text-slate-900">Resolution</h2>
+                <dl className="mt-2 divide-y divide-slate-100">
+                  <InfoRow label="Method" value={item.resolution.method} />
+                  <InfoRow label="Resolved" value={new Date(item.resolution.resolvedAt).toLocaleString()} />
+                  <InfoRow label="Note" value={item.resolution.note} />
+                </dl>
               </>
             )}
           </div>
         </div>
 
-        <div className="admin-item-actions">
+        <div className="mt-6 flex flex-wrap gap-3 border-t border-slate-100 pt-6">
           {item.status === "pending_handover" && (
-            <button className="admin-accept-btn" onClick={handleAcceptHandover}>
-              Accept Physical Handover &amp; Publish
-            </button>
+            <Button onClick={() => setConfirmHandover(true)}>Accept Physical Handover &amp; Publish</Button>
           )}
           {item.type === "found" && !["resolved", "pending_handover"].includes(item.status) && !hasActiveClaim && (
-            <button className="admin-secondary-btn" onClick={handleMarkUnclaimed}>
+            <Button variant="secondary" onClick={handleMarkUnclaimed}>
               Mark Unclaimed
-            </button>
+            </Button>
           )}
-          {item.type === "lost" && !["resolved", "cancelled"].includes(item.status) && (
-            <button className="admin-secondary-btn" onClick={handleResolveLost}>
-              Resolve This Report
-            </button>
-          )}
-          <button className="admin-secondary-btn" onClick={checkDuplicates}>
+          <Button variant="ghost" onClick={checkDuplicates}>
             Check for Possible Duplicates
-          </button>
+          </Button>
         </div>
 
         {duplicates && (
-          <div className="admin-duplicates">
-            <h2>Possible duplicates</h2>
+          <div className="mt-4 rounded-lg border border-amber-200 bg-amber-50 p-4">
+            <h2 className="text-sm font-semibold text-amber-900">Possible duplicates</h2>
             {duplicates.length === 0 ? (
-              <p>No likely duplicates found.</p>
+              <p className="mt-1 text-sm text-amber-800">No likely duplicates found.</p>
             ) : (
-              <ul>
+              <ul className="mt-2 space-y-1 text-sm">
                 {duplicates.map((d) => (
                   <li key={d.item._id}>
-                    <Link to={`/admin/items/${d.item._id}`}>{d.item.title}</Link> — {d.item.location} (
-                    {new Date(d.item.eventDate).toLocaleDateString()})
+                    <Link to={`/admin/items/${d.item._id}`} className="font-medium text-primary-700 hover:text-primary-800">
+                      {d.item.title}
+                    </Link>{" "}
+                    <span className="text-amber-800">
+                      — {d.item.location} ({new Date(d.item.eventDate).toLocaleDateString()})
+                    </span>
                   </li>
                 ))}
               </ul>
             )}
           </div>
         )}
+      </Card>
 
-        {item.type === "found" && item.status !== "pending_handover" && (
-          <div className="admin-claims-section">
-            <h2>Claims ({claims.length})</h2>
-            {claims.length === 0 ? (
-              <p>No claims have been submitted for this item yet.</p>
-            ) : (
-              claims.map((claim) => (
+      {item.type === "found" && item.status !== "pending_handover" && (
+        <div className="mt-8">
+          <h2 className="mb-4 text-lg font-semibold text-slate-900">Claims ({claims.length})</h2>
+          {claims.length === 0 ? (
+            <p className="text-sm text-slate-500">No claims have been submitted for this item yet.</p>
+          ) : (
+            <div className="space-y-4">
+              {claims.map((claim) => (
                 <ClaimRow
                   key={claim._id}
                   claim={claim}
@@ -373,29 +372,41 @@ function AdminItemDetail() {
                   itemType={item.type}
                   itemStatus={item.status}
                 />
-              ))
-            )}
-          </div>
-        )}
+              ))}
+            </div>
+          )}
+        </div>
+      )}
 
-        <div className="admin-audit-section">
-          <h2>Activity log</h2>
-          {auditLogs.length === 0 ? (
-            <p>No recorded activity yet.</p>
-          ) : (
-            <ul className="admin-audit-list">
+      <div className="mt-8">
+        <h2 className="mb-3 text-lg font-semibold text-slate-900">Activity log</h2>
+        {auditLogs.length === 0 ? (
+          <p className="text-sm text-slate-500">No recorded activity yet.</p>
+        ) : (
+          <Card className="!p-0">
+            <ul className="divide-y divide-slate-100">
               {auditLogs.map((log) => (
-                <li key={log._id}>
-                  <span className="audit-time">{new Date(log.createdAt).toLocaleString()}</span>{" "}
-                  <span className="audit-action">{log.action}</span>
+                <li key={log._id} className="px-5 py-3 text-sm text-slate-600">
+                  <span className="text-slate-400">{new Date(log.createdAt).toLocaleString()}</span>{" "}
+                  <span className="font-medium text-slate-900">{log.action}</span>
                   {log.actor?.name ? ` by ${log.actor.name}` : " (system)"}
                   {log.details ? ` — ${log.details}` : ""}
                 </li>
               ))}
             </ul>
-          )}
-        </div>
+          </Card>
+        )}
       </div>
+
+      <Modal
+        open={confirmHandover}
+        title="Accept physical handover?"
+        description="Only confirm this once the physical item has actually been received at the Student Union office. This will publish the item so students can search for and claim it."
+        confirmLabel="Accept & Publish"
+        loading={acceptingHandover}
+        onConfirm={handleAcceptHandover}
+        onClose={() => setConfirmHandover(false)}
+      />
     </div>
   );
 }

@@ -1,33 +1,43 @@
-# Lost and Found App
+# ASTU Lost & Found App
 
-A React + Vite single-page application for reporting and browsing lost and found items.
+A React + Vite single-page application for the ASTU Student Union Lost & Found
+office. Students report found items online; the Student Union confirms physical
+receipt before anything is published. There is no lost-item report and no student
+accounts.
 
 ## Tech Stack
 
 - **Frontend**: React 18, React Router DOM v7
 - **Build Tool**: Vite 7
-- **Styling**: Plain CSS (per-component)
+- **Styling**: Tailwind CSS (utility classes on components; no per-component CSS files)
 - **Language**: JavaScript (JSX)
 
 ## Project Structure
 
 ```
 src/
-  components/     # Reusable components (Navbar, ItemCard)
-  pages/          # Route-level page components (Home, Login, Register, Dashboard, FoundedItems, ReportLost)
-  data/           # Static mock data (data.js)
-  assets/         # Images and SVGs
-  App.jsx         # Root component with routing
-  main.jsx        # Entry point
-index.html        # Vite HTML shell
-vite.config.js    # Vite config (port 5000, allowedHosts: true)
+  components/       # Navbar, ItemCard, AdminRoute, AdminLayout
+  components/ui/    # Shared primitives: Button, Input/Textarea/Select, StatusBadge,
+                     # Card, PageHeader, EmptyState, LoadingState, ErrorState, Modal,
+                     # ToastProvider
+  pages/            # Home, ReportFoundItem, FoundedItems, ItemDetail, HowItWorks,
+                     # AdminLogin, AdminDashboard, AdminRegisterFoundItem,
+                     # AdminPendingFoundReports, AdminItemsList, AdminItemDetail
+  services/         # api.js (axios instance), adminAuth.js
+  index.css         # Tailwind entry point — the only CSS file in the project
+  App.jsx           # Root component with routing
+  main.jsx          # Entry point
+index.html          # Vite HTML shell
+tailwind.config.js  # Tailwind theme (primary color scale, animations)
+postcss.config.js   # Required for Tailwind's build step
+vite.config.js      # Vite config
 ```
 
 ## Development
 
 ```bash
 npm install
-npm run dev       # Starts on http://0.0.0.0:5000
+npm run dev
 ```
 
 ## Deployment
@@ -35,7 +45,3 @@ npm run dev       # Starts on http://0.0.0.0:5000
 Configured as a **static** deployment:
 - Build command: `npm run build`
 - Public directory: `dist`
-
-## Replit Workflow
-
-- **Start application**: `npm run dev` (webview on port 5000)
