@@ -8,17 +8,13 @@ const claimSchema = new mongoose.Schema(
   {
     item: { type: mongoose.Schema.Types.ObjectId, ref: "Item", required: true },
 
-    // "self"   -> the person submitting the claim says the item is theirs
-    // "on_behalf" -> the person submitting the claim is helping someone else
-    // recover it. The two identities are always kept separate; submitting a
-    // claim never implies the submitter is entitled to collect the item.
-    claimType: { type: String, enum: ["self", "on_behalf"], default: "self" },
+    // Self claims are the only supported claim type. Students may only claim
+    // items for themselves; no one may submit a claim representing another
+    // student.
+    claimType: { type: String, enum: ["self"], default: "self" },
 
     claimantStudentId: { type: String, required: true, trim: true },
     claimantContact: { type: String, trim: true, default: "" },
-
-    // Only meaningful when claimType === "on_behalf".
-    ownerStudentId: { type: String, trim: true, default: null },
 
     explanation: { type: String, required: true, trim: true }, // "why do you believe this is yours"
     evidence: { type: String, trim: true, default: "" }, // additional identifying details

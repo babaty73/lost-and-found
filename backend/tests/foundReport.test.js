@@ -17,6 +17,7 @@ function foundReportPayload(overrides = {}) {
     location: "Cafeteria",
     eventDate: "2026-09-10",
     finderStudentId: "UGR/5555/17",
+    finderContact: "+251912345678",
     ...overrides,
   };
 }
@@ -232,5 +233,24 @@ describe("Scenario 10 — accepting a handover is audited", () => {
     expect(acceptedEntry).toBeTruthy();
     expect(acceptedEntry.actor).toBeTruthy();
     expect(acceptedEntry.createdAt).toBeTruthy();
+  });
+});
+
+// Regression test for finder phone number
+describe("Regression test — finder phone number handling", () => {
+  it("stores and exposes the submitter phone number to the admin review API", async () => {
+    const token = await createAdminAndLogin();
+    const created = await request(app)
+      .post("/api/items/found-report")
+      .send(foundReportPayload({ finderContact: "+251912345678" }));
+
+    expect(created.status).toBe(201);
+
+    const adminRes = await request(app)
+      .get(`/api/items/${created.body.id}/admin`)
+      .set("Authorization", `Bearer ${token}`);
+
+    expect(adminRes.status).toBe(200);
+    expect(adminRes.body.finder.contact).toBe("+251912345678");
   });
 });

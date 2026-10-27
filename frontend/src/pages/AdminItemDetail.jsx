@@ -38,7 +38,7 @@ function ClaimRow({ claim, onReview, onRecordReturn, itemType, itemStatus }) {
     <Card className="!p-5">
       <div className="flex items-start justify-between gap-3">
         <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">
-          {claim.claimType === "on_behalf" ? "On behalf of another student" : "Self claim"}
+          Self claim
         </p>
         <StatusBadge status={claim.status} />
       </div>
@@ -46,7 +46,6 @@ function ClaimRow({ claim, onReview, onRecordReturn, itemType, itemStatus }) {
       <dl className="mt-3 divide-y divide-slate-100 text-sm dark:divide-slate-700">
         <InfoRow label="Claimant student ID" value={claim.claimantStudentId} />
         <InfoRow label="Claimant contact" value={claim.claimantContact} />
-        {claim.claimType === "on_behalf" && <InfoRow label="Intended owner student ID" value={claim.ownerStudentId} />}
       </dl>
 
       <div className="mt-3 space-y-2 text-sm">
@@ -302,6 +301,7 @@ function AdminItemDetail() {
             <dl className="mt-2 divide-y divide-slate-100 dark:divide-slate-700">
               <InfoRow label="Finder type" value={item.finder?.type || "unknown"} />
               <InfoRow label="Finder student ID" value={item.finder?.studentId} />
+              <InfoRow label="Finder phone" value={item.finder?.contact} />
               <InfoRow label="Finder name" value={item.finder?.name} />
               <InfoRow label="Received through" value={item.intake?.receivedThrough} />
               <InfoRow label="Intake notes" value={item.intake?.notes} />

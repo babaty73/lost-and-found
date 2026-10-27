@@ -213,9 +213,9 @@ function ReportFoundItem() {
 
         <Input
           id="found-report-contact"
-          label="Contact information (optional)"
+          label="Phone number (optional)"
           name="finderContact"
-          placeholder="Phone number or email"
+          placeholder="Phone number"
           value={form.finderContact}
           onChange={handleChange}
         />

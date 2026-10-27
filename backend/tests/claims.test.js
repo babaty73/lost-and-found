@@ -56,19 +56,7 @@ describe("Claim submission — public, no login", () => {
     expect(itemRes.body.status).toBe("under_review");
   });
 
-  it("requires an ownerStudentId for on_behalf claims", async () => {
-    const token = await createAdminAndLogin();
-    const itemId = await createFoundItem(token);
-
-    const res = await request(app).post(`/api/items/${itemId}/claims`).send({
-      claimType: "on_behalf",
-      claimantStudentId: "UGR/1111/17",
-      explanation: "Helping my friend recover this.",
-    });
-    expect(res.status).toBe(400);
-  });
-
-  it("records claimant and intended owner as distinct identities for on_behalf claims", async () => {
+  it("rejects on_behalf claims even if a client sends them", async () => {
     const token = await createAdminAndLogin();
     const itemId = await createFoundItem(token);
 
@@ -78,13 +66,8 @@ describe("Claim submission — public, no login", () => {
       ownerStudentId: "UGR/2222/17",
       explanation: "Helping my friend recover this.",
     });
-    expect(res.status).toBe(201);
-
-    const listRes = await request(app)
-      .get(`/api/items/${itemId}/claims`)
-      .set("Authorization", `Bearer ${token}`);
-    expect(listRes.body[0].claimantStudentId).toBe("UGR/1111/17");
-    expect(listRes.body[0].ownerStudentId).toBe("UGR/2222/17");
+    expect(res.status).toBe(400);
+    expect(res.body.message).toMatch(/only be submitted for yourself/i);
   });
 });
 
@@ -184,5 +167,26 @@ describe("Claim review — admin only, never automatic", () => {
     expect(listRes.body.length).toBe(1);
     expect(listRes.body[0].status).toBe("rejected");
     expect(listRes.body[0].review.note).toBe("Description did not match.");
+  });
+
+  it("keeps the item status stable while the claim stays pending for admin review", async () => {
+    const token = await createAdminAndLogin();
+    const itemId = await createFoundItem(token);
+
+    const claimRes = await request(app).post(`/api/items/${itemId}/claims`).send({
+      claimantStudentId: "UGR/1111/17",
+      explanation: "Mine.",
+    });
+
+    const itemRes = await request(app).get(`/api/items/${itemId}`);
+    const adminQueueRes = await request(app)
+      .get("/api/claims")
+      .set("Authorization", `Bearer ${token}`)
+      .query({ status: "pending" });
+
+    expect(claimRes.status).toBe(201);
+    expect(claimRes.body.status).toBe("pending");
+    expect(itemRes.body.status).toBe("active");
+    expect(adminQueueRes.body.claims.some((claim) => claim._id === claimRes.body.id)).toBe(true);
   });
 });

@@ -4,14 +4,10 @@ import { useParams, Link } from "react-router-dom";
 import api from "../services/api";
 import { Button, Input, Textarea, ErrorState, LoadingState, StatusBadge } from "../components/ui";
 
-const CLAIMABLE_STATUSES = ["active", "under_review"];
-
 function ClaimForm({ itemId, onSubmitted }) {
-  const [claimType, setClaimType] = useState("self");
   const [form, setForm] = useState({
     claimantStudentId: "",
     claimantContact: "",
-    ownerStudentId: "",
     explanation: "",
     evidence: "",
   });
@@ -25,7 +21,7 @@ function ClaimForm({ itemId, onSubmitted }) {
     setError("");
     setSubmitting(true);
     try {
-      await api.post(`/items/${itemId}/claims`, { claimType, ...form });
+      await api.post(`/items/${itemId}/claims`, { ...form });
       onSubmitted();
     } catch (err) {
       const message =
@@ -47,34 +43,6 @@ function ClaimForm({ itemId, onSubmitted }) {
         and may be subject to institutional action.
       </div>
 
-      <fieldset className="rounded-lg border border-slate-200 p-4 dark:border-slate-700">
-        <legend className="px-1 text-sm font-medium text-slate-700 dark:text-slate-200">Who is this claim for?</legend>
-        <div className="mt-2 space-y-2">
-          <label className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-200">
-            <input
-              type="radio"
-              name="claimType"
-              value="self"
-              checked={claimType === "self"}
-              onChange={() => setClaimType("self")}
-              className="h-4 w-4 text-primary-600 focus:ring-primary-500"
-            />
-            I am claiming this item for myself
-          </label>
-          <label className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-200">
-            <input
-              type="radio"
-              name="claimType"
-              value="on_behalf"
-              checked={claimType === "on_behalf"}
-              onChange={() => setClaimType("on_behalf")}
-              className="h-4 w-4 text-primary-600 focus:ring-primary-500"
-            />
-            I am claiming this on behalf of someone else
-          </label>
-        </div>
-      </fieldset>
-
       {error && <ErrorState>{error}</ErrorState>}
 
       <Input
@@ -86,29 +54,18 @@ function ClaimForm({ itemId, onSubmitted }) {
         required
       />
 
-      {claimType === "on_behalf" && (
-        <Input
-          id="owner-id"
-          label="Institutional student ID of the intended owner"
-          name="ownerStudentId"
-          value={form.ownerStudentId}
-          onChange={handleChange}
-          required
-        />
-      )}
-
       <Input
         id="claimant-contact"
-        label="Contact information (optional)"
+        label="Phone number (optional)"
         name="claimantContact"
-        placeholder="Phone number or email"
+        placeholder="Phone number"
         value={form.claimantContact}
         onChange={handleChange}
       />
 
       <Textarea
         id="claim-explanation"
-        label="Why do you believe this item belongs to you (or the person above)?"
+        label="Why do you believe this item belongs to you?"
         name="explanation"
         value={form.explanation}
         onChange={handleChange}
@@ -232,7 +189,7 @@ function ItemDetail() {
                   student ID to collect it.
                 </p>
               </div>
-            ) : CLAIMABLE_STATUSES.includes(item.status) ? (
+            ) : (
               <div className="border-t border-slate-100 pt-6 dark:border-slate-700">
                 <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Think this is yours?</h2>
                 <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
@@ -242,10 +199,6 @@ function ItemDetail() {
                 <div className="mt-5">
                   <ClaimForm itemId={item.id} onSubmitted={() => setClaimSubmitted(true)} />
                 </div>
-              </div>
-            ) : (
-              <div className="rounded-lg bg-slate-50 p-4 text-sm text-slate-600 dark:bg-slate-800 dark:text-slate-300">
-                This item is no longer open for new claims.
               </div>
             )}
           </div>

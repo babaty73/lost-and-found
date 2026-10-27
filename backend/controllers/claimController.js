@@ -27,9 +27,8 @@ export const createClaim = async (req, res, next) => {
       return res.status(409).json({ message: "This item is no longer open for claims." });
     }
 
-    const claimType = body.claimType === "on_behalf" ? "on_behalf" : "self";
+    const claimType = "self";
     const required = ["claimantStudentId", "explanation"];
-    if (claimType === "on_behalf") required.push("ownerStudentId");
 
     const missing = missingFields(body, required);
     if (missing.length) {
@@ -41,12 +40,8 @@ export const createClaim = async (req, res, next) => {
       return res.status(400).json({ message: "A valid institutional student ID is required." });
     }
 
-    let ownerStudentId = null;
-    if (claimType === "on_behalf") {
-      ownerStudentId = identityProvider.normalizeStudentId(body.ownerStudentId);
-      if (!ownerStudentId) {
-        return res.status(400).json({ message: "A valid institutional ID for the intended owner is required." });
-      }
+    if (body.claimType === "on_behalf" || body.ownerStudentId) {
+      return res.status(400).json({ message: "Claims can only be submitted for yourself." });
     }
 
     let claim;
@@ -56,7 +51,7 @@ export const createClaim = async (req, res, next) => {
         claimType,
         claimantStudentId,
         claimantContact: body.claimantContact || "",
-        ownerStudentId,
+        ownerStudentId: null,
         explanation: body.explanation,
         evidence: body.evidence || "",
         status: "pending",
@@ -70,23 +65,9 @@ export const createClaim = async (req, res, next) => {
       throw err;
     }
 
-    // A new claim signals "this item is under investigation" — it does NOT
-    // pick a winner. Multiple claims can and should coexist. This also
-    // covers an item that was previously marked "unclaimed": a late claim
-    // should still pull it back into the review queue rather than being
-    // silently accepted on an item nobody is actively looking at.
-    if (item.status === "active" || item.status === "unclaimed") {
-      const fromStatus = item.status;
-      item.status = "under_review";
-      await item.save();
-      await logAction({
-        actorId: null,
-        action: "ITEM_STATUS_CHANGED",
-        itemId: item._id,
-        details: `${fromStatus} -> under_review (claim submitted)`,
-      });
-    }
-
+    // Claim submission is evidence-only. A public claim does not automatically
+    // move the item into an admin review state or mark it as resolved; the
+    // admin queue remains the place where operational escalation happens.
     await logAction({
       actorId: null,
       action: "CLAIM_SUBMITTED",
