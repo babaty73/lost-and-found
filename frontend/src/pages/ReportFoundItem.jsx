@@ -102,17 +102,17 @@ function ReportFoundItem() {
   };
 
   return (
-    <div className="mx-auto max-w-2xl px-4 py-12 sm:px-6 lg:px-8">
-      <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+    <div className="mx-auto max-w-2xl px-4 py-12 sm:px-6 lg:px-8 dark:text-slate-100">
+      <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100 sm:text-3xl">
         Report a Found Item
       </h1>
-      <p className="mt-2 text-sm text-slate-600">
+      <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
         This is the only way students report items on this platform — there is no
         separate lost-item report.
       </p>
 
-      <Card className="mt-6 !border-primary-100 !bg-primary-50/50 !shadow-none">
-        <ol className="space-y-2 text-sm text-primary-900">
+      <Card className="mt-6 !border-primary-100 !bg-primary-50/50 !shadow-none dark:!border-primary-500/40 dark:!bg-primary-950/30">
+        <ol className="space-y-2 text-sm text-primary-900 dark:text-primary-100">
           {STEPS.map((step, i) => (
             <li key={step} className="flex gap-2.5">
               <span className="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-primary-600 text-[11px] font-semibold text-white">
@@ -125,14 +125,14 @@ function ReportFoundItem() {
       </Card>
 
       {showSuccess && (
-        <div className="mt-6 animate-fade-in rounded-xl border border-green-200 bg-green-50 p-5">
+        <div className="mt-6 animate-fade-in rounded-xl border border-green-200 bg-green-50 p-5 dark:border-green-800 dark:bg-green-950/20">
           <div className="flex items-start gap-3">
             <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-green-600 text-white">
               <Check className="h-4 w-4" />
             </span>
             <div>
-              <h2 className="text-sm font-semibold text-green-900">Report submitted</h2>
-              <p className="mt-1 text-sm text-green-800">
+              <h2 className="text-sm font-semibold text-green-900 dark:text-green-200">Report submitted</h2>
+              <p className="mt-1 text-sm text-green-800 dark:text-green-300">
                 Please bring the physical item to the ASTU Student Union Lost &amp; Found
                 office. Your report will only be published — and searchable by other
                 students — after the Student Union receives and verifies the item.
@@ -221,12 +221,12 @@ function ReportFoundItem() {
         />
 
         <div>
-          <label className="mb-1.5 block text-sm font-medium text-slate-700">
+          <label className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-200">
             Upload a photo (optional)
           </label>
           <label
             htmlFor="found-report-image"
-            className="flex cursor-pointer items-center justify-center rounded-lg border-2 border-dashed border-slate-300 px-4 py-6 text-sm text-slate-500 transition hover:border-primary-400 hover:text-primary-600"
+            className="flex cursor-pointer items-center justify-center rounded-lg border-2 border-dashed border-slate-300 bg-slate-50 px-4 py-6 text-sm text-slate-500 transition hover:border-primary-400 hover:text-primary-600 dark:border-slate-600 dark:bg-slate-800/60 dark:text-slate-300 dark:hover:border-primary-400 dark:hover:text-primary-300"
           >
             {fileName || "Click to choose an image (JPEG, PNG, or WEBP, under 2MB)"}
             <input
@@ -242,7 +242,7 @@ function ReportFoundItem() {
             <img
               src={form.image}
               alt="Preview of the found item"
-              className="mt-3 h-40 w-40 rounded-lg object-cover ring-1 ring-slate-200"
+              className="mt-3 h-40 w-40 rounded-lg object-cover ring-1 ring-slate-200 dark:ring-slate-700"
             />
           )}
         </div>
