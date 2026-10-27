@@ -111,7 +111,7 @@ function ReportFoundItem() {
         separate lost-item report.
       </p>
 
-      <Card className="mt-6 !border-primary-100 !bg-primary-50/50 !shadow-none dark:!border-primary-500/40 dark:!bg-primary-950/30">
+      <Card className="mt-6 !border-primary-100 !bg-primary-0/50 !shadow-none dark:!border-primary-800/40 dark:!bg-primary-950/80">
         <ol className="space-y-2 text-sm text-primary-900 dark:text-primary-100">
           {STEPS.map((step, i) => (
             <li key={step} className="flex gap-2.5">
