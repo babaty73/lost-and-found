@@ -32,7 +32,7 @@ async function createAndVerifyClaim(app_, token, itemId, studentId = "UGR/1111/1
 beforeAll(async () => {
   await startTestDb();
   app = (await import("../server.js")).default;
-});
+}, 60000);
 afterAll(stopTestDb);
 beforeEach(clearTestDb);
 

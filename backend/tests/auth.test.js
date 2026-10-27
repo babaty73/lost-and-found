@@ -7,7 +7,7 @@ let app;
 beforeAll(async () => {
   await startTestDb();
   app = (await import("../server.js")).default;
-});
+}, 60000);
 afterAll(stopTestDb);
 beforeEach(clearTestDb);
 
