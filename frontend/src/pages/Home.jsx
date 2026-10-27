@@ -33,16 +33,15 @@ const STEPS = [
 function Home() {
   return (
     <div>
-      {/* Hero */}
-      <section className="border-b border-slate-200 bg-white">
+      <section className="border-b border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
         <div className="mx-auto grid max-w-7xl items-center gap-10 px-4 py-16 sm:px-6 lg:grid-cols-2 lg:px-8 lg:py-24">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl lg:text-5xl">
+            <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100 sm:text-4xl lg:text-5xl">
               Find what belongs to you.
             </h1>
-            <p className="mt-5 max-w-xl text-lg text-slate-600">
-              ASTU Lost &amp; Found helps students search property that has been found on
-              campus, received, and verified by the ASTU Student Union.
+            <p className="mt-5 max-w-xl text-lg text-slate-600 dark:text-slate-300">
+              ASTU Lost &amp; Found helps students search property that has been
+              found on campus, received, and verified by the ASTU Student Union.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Button as={Link} to="/found-items" size="lg">
@@ -52,7 +51,7 @@ function Home() {
                 Report Found Item
               </Button>
             </div>
-            <p className="mt-4 text-sm text-slate-500">
+            <p className="mt-4 text-sm text-slate-500 dark:text-slate-400">
               Found something? Reporting it online is only step one — see how the full
               process works below.
             </p>
@@ -68,13 +67,12 @@ function Home() {
         </div>
       </section>
 
-      {/* Process */}
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-2xl text-center">
-          <h2 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+          <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100 sm:text-3xl">
             How it works
           </h2>
-          <p className="mt-3 text-slate-600">
+          <p className="mt-3 text-slate-600 dark:text-slate-300">
             The Student Union physically holds every found item and makes the final
             ownership decision — this site helps coordinate the process.
           </p>
@@ -83,34 +81,43 @@ function Home() {
         <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-5">
           {STEPS.map((step) => (
             <Card key={step.title} className="text-left">
-              <h3 className="text-sm font-semibold text-slate-900">{step.title}</h3>
-              <p className="mt-2 text-sm text-slate-600">{step.description}</p>
+              <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+                {step.title}
+              </h3>
+              <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
+                {step.description}
+              </p>
             </Card>
           ))}
         </div>
       </section>
 
-      {/* Trust / Student Union role */}
-      <section className="border-t border-slate-200 bg-white">
+      <section className="border-t border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
         <div className="mx-auto grid max-w-7xl gap-8 px-4 py-16 sm:px-6 lg:grid-cols-3 lg:px-8">
           <div>
-            <h3 className="text-base font-semibold text-slate-900">The Student Union decides ownership</h3>
-            <p className="mt-2 text-sm text-slate-600">
+            <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">
+              The Student Union decides ownership
+            </h3>
+            <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
               Submitting a claim does not automatically give you the item. Staff review
               every claim and verify identity in person before anything is released.
             </p>
           </div>
           <div>
-            <h3 className="text-base font-semibold text-slate-900">Nothing is public until it's received</h3>
-            <p className="mt-2 text-sm text-slate-600">
+            <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">
+              Nothing is public until it's received
+            </h3>
+            <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
               An online found-item report stays private until the physical item actually
               arrives at the office — the site never lists something the Student Union
               doesn't have.
             </p>
           </div>
           <div>
-            <h3 className="text-base font-semibold text-slate-900">Private details stay private</h3>
-            <p className="mt-2 text-sm text-slate-600">
+            <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">
+              Private details stay private
+            </h3>
+            <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
               Contact information and identifying details used to verify a claim are
               never shown to the public — only what's needed to recognize an item.
             </p>

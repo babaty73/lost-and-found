@@ -27,12 +27,12 @@ function Modal({ open, title, description, confirmLabel = "Confirm", variant = "
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-title"
-        className="relative w-full max-w-md animate-scale-in rounded-xl bg-white p-6 shadow-xl"
+        className="relative w-full max-w-md animate-scale-in rounded-xl border border-slate-200 bg-white p-6 shadow-xl dark:border-slate-700 dark:bg-slate-900"
       >
-        <h2 id="modal-title" className="text-lg font-semibold text-slate-900">
+        <h2 id="modal-title" className="text-lg font-semibold text-slate-900 dark:text-slate-100">
           {title}
         </h2>
-        {description && <p className="mt-2 text-sm text-slate-600">{description}</p>}
+        {description && <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">{description}</p>}
         <div className="mt-6 flex justify-end gap-3">
           <Button variant="secondary" onClick={onClose} disabled={loading}>
             Cancel

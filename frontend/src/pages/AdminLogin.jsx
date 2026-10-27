@@ -38,12 +38,12 @@ function AdminLogin({ onLogin }) {
   };
 
   return (
-    <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center bg-slate-50 px-4 py-12">
+    <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center bg-slate-50 px-4 py-12 dark:bg-slate-950">
       <form
-        className="w-full max-w-sm rounded-2xl border border-slate-200 bg-white p-8 shadow-card"
+        className="w-full max-w-sm rounded-2xl border border-slate-200 bg-white p-8 shadow-card dark:border-slate-700 dark:bg-slate-900"
         onSubmit={handleSubmit}
       >
-        <h1 className="text-center text-xl font-bold text-slate-900">Student Union Admin Login</h1>
+        <h1 className="text-center text-xl font-bold text-slate-900 dark:text-slate-100">Student Union Admin Login</h1>
 
         {error && <ErrorState className="mt-5">{error}</ErrorState>}
 

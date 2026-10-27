@@ -2,11 +2,11 @@ const VARIANTS = {
   primary:
     "bg-primary-600 text-white hover:bg-primary-700 focus-visible:ring-primary-500 disabled:bg-primary-300",
   secondary:
-    "bg-white text-slate-700 border border-slate-300 hover:bg-slate-50 focus-visible:ring-primary-500 disabled:text-slate-400 disabled:bg-slate-50",
+    "bg-white text-slate-700 border border-slate-300 hover:bg-slate-50 focus-visible:ring-primary-500 disabled:text-slate-400 disabled:bg-slate-50 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700 dark:disabled:bg-slate-800 dark:disabled:text-slate-400",
   destructive:
     "bg-red-600 text-white hover:bg-red-700 focus-visible:ring-red-500 disabled:bg-red-300",
   ghost:
-    "bg-transparent text-slate-600 hover:bg-slate-100 focus-visible:ring-primary-500 disabled:text-slate-300",
+    "bg-transparent text-slate-600 hover:bg-slate-100 focus-visible:ring-primary-500 disabled:text-slate-300 dark:text-slate-300 dark:hover:bg-slate-800 dark:disabled:text-slate-500",
 };
 
 const SIZES = {
@@ -28,6 +28,7 @@ function Button({
   disabled = false,
   className = "",
   children,
+  // eslint-disable-next-line no-unused-vars
   as: Comp = "button",
   ...props
 }) {

@@ -24,7 +24,7 @@ function AdminPendingFoundReports() {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-      <Link to="/admin" className="mb-4 inline-block text-sm font-medium text-primary-600 hover:text-primary-700">
+      <Link to="/admin" className="mb-4 inline-block text-sm font-medium text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300">
         ← Back to dashboard
       </Link>
       <PageHeader
@@ -46,24 +46,24 @@ function AdminPendingFoundReports() {
           {reports.map((report) => (
             <Card as={Link} to={`/admin/items/${report._id}`} hoverable key={report._id}>
               <div className="flex items-start justify-between gap-3">
-                <h2 className="text-sm font-semibold text-slate-900">{report.title}</h2>
+                <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100">{report.title}</h2>
                 <StatusBadge status="pending_handover" />
               </div>
-              <dl className="mt-3 space-y-1 text-sm text-slate-600">
+              <dl className="mt-3 space-y-1 text-sm text-slate-600 dark:text-slate-300">
                 <div>
-                  <dt className="inline font-medium text-slate-700">Found at: </dt>
+                  <dt className="inline font-medium text-slate-700 dark:text-slate-200">Found at: </dt>
                   <dd className="inline">{report.location}</dd>
                 </div>
                 <div>
-                  <dt className="inline font-medium text-slate-700">Category: </dt>
+                  <dt className="inline font-medium text-slate-700 dark:text-slate-200">Category: </dt>
                   <dd className="inline">{report.category}</dd>
                 </div>
                 <div>
-                  <dt className="inline font-medium text-slate-700">Submitted: </dt>
+                  <dt className="inline font-medium text-slate-700 dark:text-slate-200">Submitted: </dt>
                   <dd className="inline">{new Date(report.createdAt).toLocaleString()}</dd>
                 </div>
               </dl>
-              <p className="mt-3 text-xs font-medium text-primary-600">Open to review and accept handover →</p>
+              <p className="mt-3 text-xs font-medium text-primary-600 dark:text-primary-400">Open to review and accept handover →</p>
             </Card>
           ))}
         </div>

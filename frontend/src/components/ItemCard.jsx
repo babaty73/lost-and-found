@@ -11,9 +11,9 @@ function ItemCard({ item }) {
   return (
     <Link
       to={`/items/${item.id}`}
-      className="group flex flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-card transition duration-150 hover:-translate-y-0.5 hover:shadow-card-hover"
+      className="group flex flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-card transition duration-150 hover:-translate-y-0.5 hover:shadow-card-hover dark:border-slate-700 dark:bg-slate-900"
     >
-      <div className="aspect-[4/3] w-full overflow-hidden bg-slate-100">
+      <div className="aspect-[4/3] w-full overflow-hidden bg-slate-100 dark:bg-slate-800">
         {thumbnail ? (
           <img
             src={thumbnail}
@@ -21,17 +21,17 @@ function ItemCard({ item }) {
             className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
           />
         ) : (
-          <div className="flex h-full w-full items-center justify-center text-sm text-slate-400" aria-hidden="true">
+          <div className="flex h-full w-full items-center justify-center text-sm text-slate-400 dark:text-slate-500" aria-hidden="true">
             No photo
           </div>
         )}
       </div>
 
       <div className="flex flex-1 flex-col gap-1.5 p-4">
-        <h3 className="line-clamp-1 text-sm font-semibold text-slate-900">{item.title}</h3>
-        <p className="text-xs text-slate-500">{item.category}</p>
-        <p className="text-xs text-slate-500">Found: {item.location}</p>
-        <p className="text-xs text-slate-400">{eventDate}</p>
+        <h3 className="line-clamp-1 text-sm font-semibold text-slate-900 dark:text-slate-100">{item.title}</h3>
+        <p className="text-xs text-slate-500 dark:text-slate-400">{item.category}</p>
+        <p className="text-xs text-slate-500 dark:text-slate-400">Found: {item.location}</p>
+        <p className="text-xs text-slate-400 dark:text-slate-500">{eventDate}</p>
         <div className="mt-auto pt-2">
           <StatusBadge status={item.status} />
         </div>

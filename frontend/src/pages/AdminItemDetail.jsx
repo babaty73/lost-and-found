@@ -7,8 +7,8 @@ function InfoRow({ label, value }) {
   if (value === undefined || value === null || value === "") return null;
   return (
     <div className="flex justify-between gap-4 py-1.5 text-sm">
-      <dt className="text-slate-500">{label}</dt>
-      <dd className="text-right font-medium text-slate-900">{value}</dd>
+      <dt className="text-slate-500 dark:text-slate-400">{label}</dt>
+      <dd className="text-right font-medium text-slate-900 dark:text-slate-100">{value}</dd>
     </div>
   );
 }
@@ -36,13 +36,13 @@ function ClaimRow({ claim, onReview, onRecordReturn, itemType, itemStatus }) {
   return (
     <Card className="!p-5">
       <div className="flex items-start justify-between gap-3">
-        <p className="text-sm font-semibold text-slate-900">
+        <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">
           {claim.claimType === "on_behalf" ? "On behalf of another student" : "Self claim"}
         </p>
         <StatusBadge status={claim.status} />
       </div>
 
-      <dl className="mt-3 divide-y divide-slate-100 text-sm">
+      <dl className="mt-3 divide-y divide-slate-100 text-sm dark:divide-slate-700">
         <InfoRow label="Claimant student ID" value={claim.claimantStudentId} />
         <InfoRow label="Claimant contact" value={claim.claimantContact} />
         {claim.claimType === "on_behalf" && <InfoRow label="Intended owner student ID" value={claim.ownerStudentId} />}
@@ -50,13 +50,13 @@ function ClaimRow({ claim, onReview, onRecordReturn, itemType, itemStatus }) {
 
       <div className="mt-3 space-y-2 text-sm">
         <p>
-          <span className="font-medium text-slate-700">Why they believe it's theirs: </span>
-          <span className="text-slate-600">{claim.explanation}</span>
+          <span className="font-medium text-slate-700 dark:text-slate-200">Why they believe it's theirs: </span>
+          <span className="text-slate-600 dark:text-slate-300">{claim.explanation}</span>
         </p>
         {claim.evidence && (
           <p>
-            <span className="font-medium text-slate-700">Identifying details provided: </span>
-            <span className="text-slate-600">{claim.evidence}</span>
+            <span className="font-medium text-slate-700 dark:text-slate-200">Identifying details provided: </span>
+            <span className="text-slate-600 dark:text-slate-300">{claim.evidence}</span>
           </p>
         )}
       </div>
@@ -71,7 +71,7 @@ function ClaimRow({ claim, onReview, onRecordReturn, itemType, itemStatus }) {
       )}
 
       {claim.status === "pending" && (
-        <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-slate-100 pt-4">
+        <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-slate-100 pt-4 dark:border-slate-700">
           <label className="sr-only" htmlFor={`note-${claim._id}`}>
             Admin note
           </label>
@@ -81,7 +81,7 @@ function ClaimRow({ claim, onReview, onRecordReturn, itemType, itemStatus }) {
             placeholder="Optional note"
             value={note}
             onChange={(e) => setNote(e.target.value)}
-            className="min-w-[160px] flex-1 rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+            className="min-w-[160px] flex-1 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-500"
           />
           <Button size="sm" disabled={busy} onClick={() => run("verify")}>
             Verify
@@ -93,7 +93,7 @@ function ClaimRow({ claim, onReview, onRecordReturn, itemType, itemStatus }) {
       )}
 
       {claim.status === "verified" && itemType === "found" && itemStatus !== "resolved" && (
-        <div className="mt-4 border-t border-slate-100 pt-4">
+        <div className="mt-4 border-t border-slate-100 pt-4 dark:border-slate-700">
           <Button size="sm" disabled={busy} onClick={() => setConfirmAction("return")}>
             Record Return (item collected)
           </Button>
@@ -148,6 +148,7 @@ function AdminItemDetail() {
       setItem(itemRes.data);
       setClaims(claimsRes.data);
       setAuditLogs(auditRes.data.logs);
+    // eslint-disable-next-line no-unused-vars
     } catch (_err) {
       setError("Could not load this item.");
     } finally {
@@ -215,6 +216,7 @@ function AdminItemDetail() {
     try {
       const res = await api.get(`/items/${id}/possible-duplicates`);
       setDuplicates(res.data.possibleDuplicates);
+    // eslint-disable-next-line no-unused-vars
     } catch (_err) {
       setDuplicates([]);
     }
@@ -231,7 +233,7 @@ function AdminItemDetail() {
     return (
       <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
         <ErrorState>{error || "Item not found."}</ErrorState>
-        <Link to="/admin" className="mt-4 inline-block text-sm font-medium text-primary-600 hover:text-primary-700">
+        <Link to="/admin" className="mt-4 inline-block text-sm font-medium text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300">
           ← Back to dashboard
         </Link>
       </div>
@@ -242,20 +244,20 @@ function AdminItemDetail() {
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
-      <Link to="/admin" className="mb-4 inline-block text-sm font-medium text-primary-600 hover:text-primary-700">
+      <Link to="/admin" className="mb-4 inline-block text-sm font-medium text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300">
         ← Back to dashboard
       </Link>
 
       <Card>
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <h1 className="text-xl font-bold text-slate-900">{item.title}</h1>
+          <h1 className="text-xl font-bold text-slate-900 dark:text-slate-100">{item.title}</h1>
           <StatusBadge status={item.status} />
         </div>
 
         {actionError && <ErrorState className="mt-4">{actionError}</ErrorState>}
 
         {item.status === "pending_handover" && (
-          <div className="mt-4 rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+          <div className="mt-4 rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900 dark:border-amber-900/60 dark:bg-amber-950/40 dark:text-amber-200">
             This is an online report only — the Student Union has not received the
             physical item yet. It is not publicly visible and cannot be claimed until
             you accept the handover below.
@@ -264,37 +266,37 @@ function AdminItemDetail() {
 
         <div className="mt-6 grid grid-cols-1 gap-8 sm:grid-cols-2">
           <div>
-            <h2 className="text-sm font-semibold text-slate-900">Item information</h2>
-            <dl className="mt-2 divide-y divide-slate-100">
+            <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100">Item information</h2>
+            <dl className="mt-2 divide-y divide-slate-100 dark:divide-slate-700">
               <InfoRow label="Type" value={item.type} />
               <InfoRow label="Category" value={item.category} />
               <InfoRow label="Location" value={item.location} />
               <InfoRow label="Date" value={new Date(item.eventDate).toLocaleDateString()} />
             </dl>
             {item.description && (
-              <p className="mt-3 text-sm text-slate-600">
-                <span className="font-medium text-slate-700">Description: </span>
+              <p className="mt-3 text-sm text-slate-600 dark:text-slate-300">
+                <span className="font-medium text-slate-700 dark:text-slate-200">Description: </span>
                 {item.description}
               </p>
             )}
             {item.privateDetails && (
-              <p className="mt-2 text-sm text-slate-600">
-                <span className="font-medium text-slate-700">Private verification details: </span>
+              <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
+                <span className="font-medium text-slate-700 dark:text-slate-200">Private verification details: </span>
                 {item.privateDetails}
               </p>
             )}
             {item.images?.length > 0 && (
               <div className="mt-3 flex flex-wrap gap-2">
                 {item.images.map((src, i) => (
-                  <img key={i} src={src} alt={`${item.title} ${i + 1}`} className="h-24 w-24 rounded-lg object-cover ring-1 ring-slate-200" />
+                  <img key={i} src={src} alt={`${item.title} ${i + 1}`} className="h-24 w-24 rounded-lg object-cover ring-1 ring-slate-200 dark:ring-slate-700" />
                 ))}
               </div>
             )}
           </div>
 
           <div>
-            <h2 className="text-sm font-semibold text-slate-900">Finder / intake information</h2>
-            <dl className="mt-2 divide-y divide-slate-100">
+            <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100">Finder / intake information</h2>
+            <dl className="mt-2 divide-y divide-slate-100 dark:divide-slate-700">
               <InfoRow label="Finder type" value={item.finder?.type || "unknown"} />
               <InfoRow label="Finder student ID" value={item.finder?.studentId} />
               <InfoRow label="Finder name" value={item.finder?.name} />
@@ -308,8 +310,8 @@ function AdminItemDetail() {
 
             {item.resolution?.resolvedAt && (
               <>
-                <h2 className="mt-5 text-sm font-semibold text-slate-900">Resolution</h2>
-                <dl className="mt-2 divide-y divide-slate-100">
+                <h2 className="mt-5 text-sm font-semibold text-slate-900 dark:text-slate-100">Resolution</h2>
+                <dl className="mt-2 divide-y divide-slate-100 dark:divide-slate-700">
                   <InfoRow label="Method" value={item.resolution.method} />
                   <InfoRow label="Resolved" value={new Date(item.resolution.resolvedAt).toLocaleString()} />
                   <InfoRow label="Note" value={item.resolution.note} />
@@ -319,7 +321,7 @@ function AdminItemDetail() {
           </div>
         </div>
 
-        <div className="mt-6 flex flex-wrap gap-3 border-t border-slate-100 pt-6">
+        <div className="mt-6 flex flex-wrap gap-3 border-t border-slate-100 pt-6 dark:border-slate-700">
           {item.status === "pending_handover" && (
             <Button onClick={() => setConfirmHandover(true)}>Accept Physical Handover &amp; Publish</Button>
           )}
@@ -334,18 +336,18 @@ function AdminItemDetail() {
         </div>
 
         {duplicates && (
-          <div className="mt-4 rounded-lg border border-amber-200 bg-amber-50 p-4">
-            <h2 className="text-sm font-semibold text-amber-900">Possible duplicates</h2>
+          <div className="mt-4 rounded-lg border border-amber-200 bg-amber-50 p-4 dark:border-amber-900/60 dark:bg-amber-950/40">
+            <h2 className="text-sm font-semibold text-amber-900 dark:text-amber-200">Possible duplicates</h2>
             {duplicates.length === 0 ? (
-              <p className="mt-1 text-sm text-amber-800">No likely duplicates found.</p>
+              <p className="mt-1 text-sm text-amber-800 dark:text-amber-200">No likely duplicates found.</p>
             ) : (
               <ul className="mt-2 space-y-1 text-sm">
                 {duplicates.map((d) => (
                   <li key={d.item._id}>
-                    <Link to={`/admin/items/${d.item._id}`} className="font-medium text-primary-700 hover:text-primary-800">
+                    <Link to={`/admin/items/${d.item._id}`} className="font-medium text-primary-700 hover:text-primary-800 dark:text-primary-300 dark:hover:text-primary-200">
                       {d.item.title}
                     </Link>{" "}
-                    <span className="text-amber-800">
+                    <span className="text-amber-800 dark:text-amber-200">
                       — {d.item.location} ({new Date(d.item.eventDate).toLocaleDateString()})
                     </span>
                   </li>
@@ -358,9 +360,9 @@ function AdminItemDetail() {
 
       {item.type === "found" && item.status !== "pending_handover" && (
         <div className="mt-8">
-          <h2 className="mb-4 text-lg font-semibold text-slate-900">Claims ({claims.length})</h2>
+          <h2 className="mb-4 text-lg font-semibold text-slate-900 dark:text-slate-100">Claims ({claims.length})</h2>
           {claims.length === 0 ? (
-            <p className="text-sm text-slate-500">No claims have been submitted for this item yet.</p>
+            <p className="text-sm text-slate-500 dark:text-slate-400">No claims have been submitted for this item yet.</p>
           ) : (
             <div className="space-y-4">
               {claims.map((claim) => (
@@ -379,16 +381,16 @@ function AdminItemDetail() {
       )}
 
       <div className="mt-8">
-        <h2 className="mb-3 text-lg font-semibold text-slate-900">Activity log</h2>
+        <h2 className="mb-3 text-lg font-semibold text-slate-900 dark:text-slate-100">Activity log</h2>
         {auditLogs.length === 0 ? (
-          <p className="text-sm text-slate-500">No recorded activity yet.</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400">No recorded activity yet.</p>
         ) : (
           <Card className="!p-0">
-            <ul className="divide-y divide-slate-100">
+            <ul className="divide-y divide-slate-100 dark:divide-slate-700">
               {auditLogs.map((log) => (
-                <li key={log._id} className="px-5 py-3 text-sm text-slate-600">
-                  <span className="text-slate-400">{new Date(log.createdAt).toLocaleString()}</span>{" "}
-                  <span className="font-medium text-slate-900">{log.action}</span>
+                <li key={log._id} className="px-5 py-3 text-sm text-slate-600 dark:text-slate-300">
+                  <span className="text-slate-400 dark:text-slate-500">{new Date(log.createdAt).toLocaleString()}</span>{" "}
+                  <span className="font-medium text-slate-900 dark:text-slate-100">{log.action}</span>
                   {log.actor?.name ? ` by ${log.actor.name}` : " (system)"}
                   {log.details ? ` — ${log.details}` : ""}
                 </li>

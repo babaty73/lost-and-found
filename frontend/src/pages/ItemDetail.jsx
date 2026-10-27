@@ -37,7 +37,7 @@ function ClaimForm({ itemId, onSubmitted }) {
 
   return (
     <form className="space-y-5" onSubmit={handleSubmit}>
-      <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm leading-relaxed text-amber-900">
+      <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm leading-relaxed text-amber-900 dark:border-amber-900/60 dark:bg-amber-950/40 dark:text-amber-200">
         Submitting a claim does not mean this item is automatically yours, and it does
         not reserve it for you. Multiple students may claim the same item — the Student
         Union reviews every claim and decides ownership. If your claim is verified, you
@@ -46,10 +46,10 @@ function ClaimForm({ itemId, onSubmitted }) {
         and may be subject to institutional action.
       </div>
 
-      <fieldset className="rounded-lg border border-slate-200 p-4">
-        <legend className="px-1 text-sm font-medium text-slate-700">Who is this claim for?</legend>
+      <fieldset className="rounded-lg border border-slate-200 p-4 dark:border-slate-700">
+        <legend className="px-1 text-sm font-medium text-slate-700 dark:text-slate-200">Who is this claim for?</legend>
         <div className="mt-2 space-y-2">
-          <label className="flex items-center gap-2 text-sm text-slate-700">
+          <label className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-200">
             <input
               type="radio"
               name="claimType"
@@ -60,7 +60,7 @@ function ClaimForm({ itemId, onSubmitted }) {
             />
             I am claiming this item for myself
           </label>
-          <label className="flex items-center gap-2 text-sm text-slate-700">
+          <label className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-200">
             <input
               type="radio"
               name="claimType"
@@ -139,6 +139,7 @@ function ItemDetail() {
 
   useEffect(() => {
     let cancelled = false;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setLoading(true);
     api
       .get(`/items/${id}`)
@@ -168,7 +169,7 @@ function ItemDetail() {
     return (
       <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6 lg:px-8">
         <ErrorState>{error || "This item could not be found."}</ErrorState>
-        <Link to="/found-items" className="mt-4 inline-block text-sm font-medium text-primary-600 hover:text-primary-700">
+        <Link to="/found-items" className="mt-4 inline-block text-sm font-medium text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300">
           ← Back to browse
         </Link>
       </div>
@@ -177,11 +178,11 @@ function ItemDetail() {
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6 lg:px-8">
-      <Link to="/found-items" className="mb-4 inline-block text-sm font-medium text-primary-600 hover:text-primary-700">
+      <Link to="/found-items" className="mb-4 inline-block text-sm font-medium text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300">
         ← Back to browse
       </Link>
 
-      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-card">
+      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-card dark:border-slate-700 dark:bg-slate-900">
         {item.images?.length > 0 ? (
           <div className={`grid gap-0.5 ${item.images.length > 1 ? "grid-cols-2" : "grid-cols-1"}`}>
             {item.images.map((src, i) => (
@@ -189,39 +190,39 @@ function ItemDetail() {
             ))}
           </div>
         ) : (
-          <div className="flex h-56 w-full items-center justify-center bg-slate-100 text-sm text-slate-400">
+          <div className="flex h-56 w-full items-center justify-center bg-slate-100 text-sm text-slate-400 dark:bg-slate-800 dark:text-slate-500">
             No photo
           </div>
         )}
 
         <div className="p-6 sm:p-8">
           <div className="flex flex-wrap items-center gap-3">
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900">{item.title}</h1>
+            <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">{item.title}</h1>
             <StatusBadge status={item.status} />
           </div>
 
-          <dl className="mt-6 grid grid-cols-1 gap-4 border-y border-slate-100 py-5 sm:grid-cols-3">
+          <dl className="mt-6 grid grid-cols-1 gap-4 border-y border-slate-100 py-5 sm:grid-cols-3 dark:border-slate-700">
             <div>
               <dt className="text-xs font-medium uppercase tracking-wide text-slate-400">Category</dt>
-              <dd className="mt-1 text-sm text-slate-900">{item.category}</dd>
+              <dd className="mt-1 text-sm text-slate-900 dark:text-slate-100">{item.category}</dd>
             </div>
             <div>
               <dt className="text-xs font-medium uppercase tracking-wide text-slate-400">Found location</dt>
-              <dd className="mt-1 text-sm text-slate-900">{item.location}</dd>
+              <dd className="mt-1 text-sm text-slate-900 dark:text-slate-100">{item.location}</dd>
             </div>
             <div>
               <dt className="text-xs font-medium uppercase tracking-wide text-slate-400">Date found</dt>
-              <dd className="mt-1 text-sm text-slate-900">{new Date(item.eventDate).toLocaleDateString()}</dd>
+              <dd className="mt-1 text-sm text-slate-900 dark:text-slate-100">{new Date(item.eventDate).toLocaleDateString()}</dd>
             </div>
           </dl>
 
-          {item.description && <p className="mt-5 text-sm leading-relaxed text-slate-600">{item.description}</p>}
+          {item.description && <p className="mt-5 text-sm leading-relaxed text-slate-600 dark:text-slate-300">{item.description}</p>}
 
           <div className="mt-8">
             {claimSubmitted ? (
-              <div className="rounded-lg border border-green-200 bg-green-50 p-5">
-                <h2 className="text-sm font-semibold text-green-900">Claim submitted</h2>
-                <p className="mt-1.5 text-sm text-green-800">
+              <div className="rounded-lg border border-green-200 bg-green-50 p-5 dark:border-green-800/80 dark:bg-green-950/40">
+                <h2 className="text-sm font-semibold text-green-900 dark:text-green-200">Claim submitted</h2>
+                <p className="mt-1.5 text-sm text-green-800 dark:text-green-200">
                   Thank you. The Student Union will review your claim along with any
                   others submitted for this item. If it's verified, you'll need to visit
                   the Student Union Lost &amp; Found office with your institutional
@@ -229,9 +230,9 @@ function ItemDetail() {
                 </p>
               </div>
             ) : CLAIMABLE_STATUSES.includes(item.status) ? (
-              <div className="border-t border-slate-100 pt-6">
-                <h2 className="text-lg font-semibold text-slate-900">Think this is yours?</h2>
-                <p className="mt-1 text-sm text-slate-600">
+              <div className="border-t border-slate-100 pt-6 dark:border-slate-700">
+                <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Think this is yours?</h2>
+                <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
                   Found items are held at the ASTU Student Union Lost &amp; Found office
                   — submitting a claim below does not give you possession of the item.
                 </p>
@@ -240,7 +241,7 @@ function ItemDetail() {
                 </div>
               </div>
             ) : (
-              <div className="rounded-lg bg-slate-50 p-4 text-sm text-slate-600">
+              <div className="rounded-lg bg-slate-50 p-4 text-sm text-slate-600 dark:bg-slate-800 dark:text-slate-300">
                 This item is no longer open for new claims.
               </div>
             )}

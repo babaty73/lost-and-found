@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 
+// eslint-disable-next-line no-unused-vars
 const navLinkClasses = ({ isActive }, darkMode) =>
   `rounded-md px-3 py-2 text-sm font-medium transition-colors ${
     isActive

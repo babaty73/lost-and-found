@@ -3,9 +3,9 @@ import { createContext, useCallback, useContext, useRef, useState } from "react"
 const ToastContext = createContext(null);
 
 const VARIANT_CLASSES = {
-  success: "border-green-200 bg-green-50 text-green-800",
-  error: "border-red-200 bg-red-50 text-red-800",
-  info: "border-slate-200 bg-white text-slate-800",
+  success: "border-green-200 bg-green-50 text-green-800 dark:border-green-800/80 dark:bg-green-950/60 dark:text-green-200",
+  error: "border-red-200 bg-red-50 text-red-800 dark:border-red-800/80 dark:bg-red-950/60 dark:text-red-200",
+  info: "border-slate-200 bg-white text-slate-800 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100",
 };
 
 // A minimal toast system — replaces the browser's alert()/confirm() for
@@ -41,6 +41,7 @@ export function ToastProvider({ children }) {
   );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useToast() {
   const ctx = useContext(ToastContext);
   if (!ctx) throw new Error("useToast must be used within a ToastProvider");

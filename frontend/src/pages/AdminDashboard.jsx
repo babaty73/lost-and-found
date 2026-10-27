@@ -33,9 +33,9 @@ function useCount(params) {
 
 function StatCard({ label, count, to, highlight }) {
   const content = (
-    <Card hoverable={Boolean(to)} className={highlight ? "!border-primary-200 !bg-primary-50/50" : ""}>
-      <p className="text-3xl font-bold text-slate-900">{count === null ? "…" : count}</p>
-      <p className="mt-1 text-sm text-slate-500">{label}</p>
+    <Card hoverable={Boolean(to)} className={highlight ? "!border-primary-200 !bg-primary-50/50 dark:!border-primary-500/40 dark:!bg-primary-950/30" : ""}>
+      <p className="text-3xl font-bold text-slate-900 dark:text-slate-100">{count === null ? "…" : count}</p>
+      <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{label}</p>
     </Card>
   );
   return to ? <Link to={to}>{content}</Link> : content;
@@ -81,7 +81,7 @@ function AdminDashboard() {
         <StatCard label="Resolved Items" count={resolved} to="/admin/items?status=resolved" />
       </div>
 
-      <h2 className="mb-4 text-lg font-semibold text-slate-900">Items with claims awaiting review</h2>
+      <h2 className="mb-4 text-lg font-semibold text-slate-900 dark:text-slate-100">Items with claims awaiting review</h2>
 
       {loadingQueue ? (
         <LoadingState />
@@ -95,20 +95,20 @@ function AdminDashboard() {
           {underReviewItems.map((item) => (
             <Card as={Link} to={`/admin/items/${item.id}`} hoverable key={item.id}>
               <div className="flex items-start justify-between gap-3">
-                <h3 className="text-sm font-semibold text-slate-900">{item.title}</h3>
+                <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">{item.title}</h3>
                 <StatusBadge status={item.status} />
               </div>
-              <dl className="mt-3 space-y-1 text-sm text-slate-600">
+              <dl className="mt-3 space-y-1 text-sm text-slate-600 dark:text-slate-300">
                 <div>
-                  <dt className="inline font-medium text-slate-700">Location: </dt>
+                  <dt className="inline font-medium text-slate-700 dark:text-slate-200">Location: </dt>
                   <dd className="inline">{item.location}</dd>
                 </div>
                 <div>
-                  <dt className="inline font-medium text-slate-700">Category: </dt>
+                  <dt className="inline font-medium text-slate-700 dark:text-slate-200">Category: </dt>
                   <dd className="inline">{item.category}</dd>
                 </div>
               </dl>
-              <p className="mt-3 text-xs font-medium text-primary-600">Open to review claims →</p>
+              <p className="mt-3 text-xs font-medium text-primary-600 dark:text-primary-400">Open to review claims →</p>
             </Card>
           ))}
         </div>
