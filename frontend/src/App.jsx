@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 
 import Navbar from "./components/Navbar";
@@ -30,6 +30,17 @@ import AdminItemDetail from "./pages/AdminItemDetail";
 // nothing in this frontend calls it or assumes `type: "lost"` exists.
 function App() {
   const [adminUser, setAdminUser] = useState(getAdminUser());
+  const [darkMode, setDarkMode] = useState(() => {
+    const saved = localStorage.getItem("astu-theme");
+    if (saved) return saved === "dark";
+    return window.matchMedia("(prefers-color-scheme: dark)").matches;
+  });
+
+  useEffect(() => {
+    const root = document.documentElement;
+    root.classList.toggle("dark", darkMode);
+    localStorage.setItem("astu-theme", darkMode ? "dark" : "light");
+  }, [darkMode]);
 
   const handleLogout = () => {
     clearAdminSession();
@@ -38,10 +49,10 @@ function App() {
 
   return (
     <ToastProvider>
-      <div className="flex min-h-screen flex-col bg-slate-50">
-        <Navbar adminUser={adminUser} onLogout={handleLogout} />
+      <div className="flex min-h-screen flex-col bg-slate-50 text-slate-900 transition-colors duration-200 dark:bg-slate-950 dark:text-slate-100">
+        <Navbar adminUser={adminUser} onLogout={handleLogout} darkMode={darkMode} setDarkMode={setDarkMode} />
 
-        <main className="flex-1">
+        <main className="flex-1 bg-slate-50 dark:bg-slate-950">
           <Routes>
             <Route path="/" element={<Navigate to="/home" replace />} />
             <Route path="/home" element={<Home />} />
