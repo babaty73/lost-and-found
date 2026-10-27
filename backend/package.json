@@ -1,30 +1,73 @@
 {
   
   "name": "backend",
+  
   "version": "1.0.0",
+  
   "main": "server.js",
+  
   "scripts": {
-    "dev": "nodemon server.js",
-    "start": "node server.js",
-    "test": "vitest run --maxWorkers 1 --minWorkers 1",
-    "test:watch": "vitest --maxWorkers 1 --minWorkers 1"
+  
+    
+  "dev": "nodemon server.js",
+  
+    
+  "start": "node server.js",
+  
+    
+  "test": "vitest run --maxWorkers 1 --minWorkers 1",
+  
+    
+  "test:watch": "vitest --maxWorkers 1 --minWorkers 1"
+  
   },
+  
   "keywords": [],
+  
   "author": "",
+  
   "license": "ISC",
+  
   "type": "module",
+  
   "dependencies": {
-    "bcryptjs": "^3.0.3",
-    "cors": "^2.8.6",
-    "dotenv": "^17.4.2",
-    "express": "^5.2.1",
-    "jsonwebtoken": "^9.0.3",
-    "mongoose": "^9.7.1"
+  
+    
+  "bcryptjs": "^3.0.3",
+  
+    
+  "cors": "^2.8.6",
+  
+    
+  "dotenv": "^17.4.2",
+  
+    
+  "express": "^5.2.1",
+  
+    
+  "helmet": "^8.3.0",
+  
+    
+  "jsonwebtoken": "^9.0.3",
+  
+    
+  "mongoose": "^9.7.1"
+  
   },
+  
   "devDependencies": {
-    "nodemon": "^3.1.14",
-    "vitest": "^2.1.4",
-    "supertest": "^7.0.0",
-    "mongodb-memory-server": "^10.1.2"
+  
+    
+  "mongodb-memory-server": "^10.1.2",
+  
+    
+  "nodemon": "^3.1.14",
+  
+    
+  "supertest": "^7.0.0",
+  
+    
+  "vitest": "^2.1.4"
+  
   }
 }

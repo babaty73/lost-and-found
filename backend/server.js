@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import helmet from "helmet";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 
@@ -23,18 +24,48 @@ if (missingEnv.length) {
 }
 
 const app = express();
+const isProduction = process.env.NODE_ENV === "production";
 
-// CORS: restrict to the configured frontend origin(s) in production. In
-// development, with no FRONTEND_URL set, fall back to allowing any origin
-// so local `vite dev` on a random port isn't blocked.
-const allowedOrigins = (process.env.FRONTEND_URL || "")
+app.disable("x-powered-by");
+app.use(helmet({
+  contentSecurityPolicy: false,
+  crossOriginResourcePolicy: { policy: "same-site" },
+}));
+
+// CORS: restrict to configured frontend origins in production, while keeping a
+// local development fallback that still works on random Vite ports.
+const allowedOrigins = (process.env.FRONTEND_URL || process.env.CORS_ORIGINS || "")
   .split(",")
   .map((o) => o.trim())
   .filter(Boolean);
 
+if (allowedOrigins.length === 0 && !isProduction) {
+  allowedOrigins.push("http://localhost:5173", "http://localhost:3000");
+}
+
 app.use(
   cors({
-    origin: allowedOrigins.length > 0 ? allowedOrigins : true,
+    origin: (origin, callback) => {
+      if (!origin) {
+        callback(null, true);
+        return;
+      }
+
+      if (allowedOrigins.length === 0) {
+        callback(null, isProduction ? false : true);
+        return;
+      }
+
+      if (allowedOrigins.includes(origin)) {
+        callback(null, true);
+        return;
+      }
+
+      callback(new Error("Not allowed by CORS"));
+    },
+    credentials: true,
+    methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
