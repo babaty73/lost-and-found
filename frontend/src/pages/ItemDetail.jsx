@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { ArrowLeft } from "lucide-react";
 import { useParams, Link } from "react-router-dom";
 import api from "../services/api";
 import { Button, Input, Textarea, ErrorState, LoadingState, StatusBadge } from "../components/ui";
@@ -169,8 +170,9 @@ function ItemDetail() {
     return (
       <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6 lg:px-8">
         <ErrorState>{error || "This item could not be found."}</ErrorState>
-        <Link to="/found-items" className="mt-4 inline-block text-sm font-medium text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300">
-          ← Back to browse
+        <Link to="/found-items" className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300">
+          <ArrowLeft className="h-4 w-4" />
+          Back to browse
         </Link>
       </div>
     );
@@ -178,8 +180,9 @@ function ItemDetail() {
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6 lg:px-8">
-      <Link to="/found-items" className="mb-4 inline-block text-sm font-medium text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300">
-        ← Back to browse
+      <Link to="/found-items" className="mb-4 inline-flex items-center gap-2 text-sm font-medium text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300">
+        <ArrowLeft className="h-4 w-4" />
+        Back to browse
       </Link>
 
       <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-card dark:border-slate-700 dark:bg-slate-900">

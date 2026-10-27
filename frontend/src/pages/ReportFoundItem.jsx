@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Check } from "lucide-react";
 import api from "../services/api";
 import { Button, Input, Textarea, Select, ErrorState, Card } from "../components/ui";
 
@@ -127,7 +128,7 @@ function ReportFoundItem() {
         <div className="mt-6 animate-fade-in rounded-xl border border-green-200 bg-green-50 p-5">
           <div className="flex items-start gap-3">
             <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-green-600 text-white">
-              ✓
+              <Check className="h-4 w-4" />
             </span>
             <div>
               <h2 className="text-sm font-semibold text-green-900">Report submitted</h2>

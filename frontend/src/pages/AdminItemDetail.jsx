@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
+import { ArrowLeft } from "lucide-react";
 import { useParams, Link } from "react-router-dom";
 import api from "../services/api";
 import { Button, Card, StatusBadge, ErrorState, LoadingState, Modal, useToast } from "../components/ui";
@@ -233,8 +234,9 @@ function AdminItemDetail() {
     return (
       <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
         <ErrorState>{error || "Item not found."}</ErrorState>
-        <Link to="/admin" className="mt-4 inline-block text-sm font-medium text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300">
-          ← Back to dashboard
+        <Link to="/admin" className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300">
+          <ArrowLeft className="h-4 w-4" />
+          Back to dashboard
         </Link>
       </div>
     );
@@ -244,8 +246,9 @@ function AdminItemDetail() {
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
-      <Link to="/admin" className="mb-4 inline-block text-sm font-medium text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300">
-        ← Back to dashboard
+      <Link to="/admin" className="mb-4 inline-flex items-center gap-2 text-sm font-medium text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300">
+        <ArrowLeft className="h-4 w-4" />
+        Back to dashboard
       </Link>
 
       <Card>

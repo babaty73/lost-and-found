@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { ArrowRight, Plus } from "lucide-react";
 import { Link } from "react-router-dom";
 import api from "../services/api";
 import { PageHeader, Button, Card, StatusBadge, EmptyState, LoadingState } from "../components/ui";
@@ -66,7 +67,8 @@ function AdminDashboard() {
         title="Student Union Admin Dashboard"
         actions={
           <Button as={Link} to="/admin/register-found">
-            + Register a Found Item
+            <Plus className="h-4 w-4" />
+            Register a Found Item
           </Button>
         }
       />
@@ -108,7 +110,10 @@ function AdminDashboard() {
                   <dd className="inline">{item.category}</dd>
                 </div>
               </dl>
-              <p className="mt-3 text-xs font-medium text-primary-600 dark:text-primary-400">Open to review claims →</p>
+              <p className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-primary-600 dark:text-primary-400">
+                Open to review claims
+                <ArrowRight className="h-3.5 w-3.5" />
+              </p>
             </Card>
           ))}
         </div>

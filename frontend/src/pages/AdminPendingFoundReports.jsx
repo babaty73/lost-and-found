@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import api from "../services/api";
 import { PageHeader, Card, StatusBadge, EmptyState, LoadingState, ErrorState } from "../components/ui";
@@ -24,8 +25,9 @@ function AdminPendingFoundReports() {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-      <Link to="/admin" className="mb-4 inline-block text-sm font-medium text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300">
-        ← Back to dashboard
+      <Link to="/admin" className="mb-4 inline-flex items-center gap-2 text-sm font-medium text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300">
+        <ArrowLeft className="h-4 w-4" />
+        Back to dashboard
       </Link>
       <PageHeader
         title="Pending Found Item Reports"
@@ -63,7 +65,10 @@ function AdminPendingFoundReports() {
                   <dd className="inline">{new Date(report.createdAt).toLocaleString()}</dd>
                 </div>
               </dl>
-              <p className="mt-3 text-xs font-medium text-primary-600 dark:text-primary-400">Open to review and accept handover →</p>
+              <p className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-primary-600 dark:text-primary-400">
+                Open to review and accept handover
+                <ArrowRight className="h-3.5 w-3.5" />
+              </p>
             </Card>
           ))}
         </div>

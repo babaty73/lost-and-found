@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Menu, MoonStar, SunMedium, X } from "lucide-react";
 
 // eslint-disable-next-line no-unused-vars
 const navLinkClasses = ({ isActive }, darkMode) =>
@@ -54,10 +55,10 @@ function Navbar({ adminUser, onLogout, darkMode, setDarkMode }) {
           <button
             type="button"
             onClick={() => setDarkMode((prev) => !prev)}
-            className="inline-flex items-center justify-center rounded-md border border-slate-300 bg-white px-2.5 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700"
+            className="inline-flex items-center justify-center rounded-md border border-slate-300 bg-white p-2.5 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700"
             aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
           >
-            {darkMode ? "☀️" : "🌙"}
+            {darkMode ? <SunMedium className="h-4 w-4" /> : <MoonStar className="h-4 w-4" />}
           </button>
 
           {adminUser ? (
@@ -90,7 +91,7 @@ function Navbar({ adminUser, onLogout, darkMode, setDarkMode }) {
             className="inline-flex items-center justify-center rounded-md border border-slate-300 bg-white p-2 text-sm text-slate-700 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
             aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
           >
-            {darkMode ? "☀️" : "🌙"}
+            {darkMode ? <SunMedium className="h-4 w-4" /> : <MoonStar className="h-4 w-4" />}
           </button>
 
           <button
@@ -99,15 +100,7 @@ function Navbar({ adminUser, onLogout, darkMode, setDarkMode }) {
             aria-label={menuOpen ? "Close menu" : "Open menu"}
             aria-expanded={menuOpen}
           >
-            {menuOpen ? (
-              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            ) : (
-              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            )}
+            {menuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>
         </div>
       </nav>
